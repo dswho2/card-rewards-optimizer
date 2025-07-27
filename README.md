@@ -1,6 +1,21 @@
 # Card Rewards Optimizer
 Credit Card Recommendation Web App – Project & Data Flow Outline
 
+## Tech Stack
+| Tool / Tech         | Purpose                                                |
+|---------------------|--------------------------------------------------------|
+| **React + TypeScript** | Frontend UI, component-based logic and interactivity |
+| **Tailwind CSS**     | Styling and responsive layout                          |
+| **Flask / FastAPI**  | Lightweight backend API to process user input and recommendations |
+| **PostgreSQL**       | Persistent storage for user profiles and card data    |
+| **Supabase / Auth0** | User authentication and session management            |
+| **OpenAI API**       | Semantic understanding of user input (e.g. purchase intent → category) |
+| **recharts / visx**  | Visual coverage grid heatmap rendering                |
+| **Playwright / Puppeteer (Optional)** | Scraping reward data from credit card aggregator sites |
+| **Docker (Optional)**| Containerized backend + deployment support             |
+| **Vercel / Netlify** | Frontend hosting                                       |
+| **Render / Railway** | Backend + database hosting    
+
 ## High-Level App Flow
 
 1. **User signs up / logs in**
@@ -16,7 +31,7 @@ Credit Card Recommendation Web App – Project & Data Flow Outline
 
 ---
 
-## 🛠 Backend Data Flow
+## Backend Data Flow
 
 ### 1. User Input
 - Text: `"buy groceries at Trader Joe's"`
