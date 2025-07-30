@@ -2,20 +2,22 @@
 Credit Card Recommendation Web App – Project & Data Flow Outline
 
 ## Tech Stack
-| Tool / Tech         | Purpose                                                |
-|---------------------|--------------------------------------------------------|
-| **React + TypeScript** | Frontend UI, component-based logic and interactivity |
-| **Tailwind CSS**     | Styling and responsive layout                          |
-| **Flask / FastAPI**  | Lightweight backend API to process user input and recommendations |
-| **PostgreSQL**       | Persistent storage for user profiles and card data    |
-| **Supabase / Auth0** | User authentication and session management            |
-| **OpenAI API**       | Semantic understanding of user input (e.g. purchase intent → category) |
-| **recharts / visx**  | Visual coverage grid heatmap rendering                |
-| **Playwright / Puppeteer (Optional)** | Scraping reward data from credit card aggregator sites |
-| **Docker (Optional)**| Containerized backend + deployment support             |
-| **Vercel / Netlify** | Frontend hosting                                       |
-| **Render / Railway** | Backend + database hosting    
-
+| Tool / Tech                  | Purpose                                                                 |
+|------------------------------|-------------------------------------------------------------------------|
+| **Next.js + TypeScript**     | Fullstack React framework with routing, SSR, and frontend UI           |
+| **Tailwind CSS**             | Utility-first styling and responsive layout                            |
+| **shadcn/ui**                | Accessible, styled UI components built on Tailwind CSS                 |
+| **React Query (TanStack)**   | API data fetching and caching                                          |
+| **Zod + React Hook Form**    | Form handling and schema validation                                    |
+| **Flask / FastAPI**          | Lightweight backend API to process user input and recommendations      |
+| **PostgreSQL**               | Persistent storage for user profiles and card data                     |
+| **Supabase / Auth0**         | User authentication and session management                             |
+| **OpenAI API**               | Semantic understanding of user input (e.g. purchase intent → category) |
+| **Recharts / Visx**          | Visual coverage grid heatmap rendering                                 |
+| **Playwright / Puppeteer** (Optional) | Scraping reward data from credit card aggregator sites        |
+| **Docker** (Optional)        | Containerized backend + deployment support                             |
+| **Vercel**                   | Frontend hosting (optimized for Next.js)                               |
+| **Render / Railway**         | Backend + database hosting                                             |
 ## High-Level App Flow
 
 1. **User signs up / logs in**
