@@ -1,7 +1,7 @@
 // src/components/CreditCardItem.tsx
 'use client';
 
-import { Minus, GripVertical } from 'lucide-react';
+import { SquareX, GripVertical } from 'lucide-react';
 import type { Card } from '@/types';
 
 interface CardProps {
@@ -16,10 +16,10 @@ export default function CreditCardItem({ card, editMode }: CardProps) {
             <>
                 {/* Delete circle (top left) */}
                 <button
-                className="absolute top-2 left-2 w-6 h-6 flex items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700"
+                className="absolute top-1 left-1 text-red-600 hover:text-red-800"
                 aria-label="Delete card"
                 >
-                <Minus size={14} />
+                <SquareX size={24} />
                 </button>
 
                 {/* Drag handle (top right) */}
