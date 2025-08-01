@@ -1,16 +1,20 @@
 // src/api/user.ts
 
 export const getCardRec = async (description: string) => {
-    const res = await fetch('http://localhost:4000/api/recommend-card', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ description }),
-    });
+  const res = await fetch('http://localhost:4000/api/recommend-card', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description }),
+  });
 
-    if (!res.ok) throw new Error('Failed to fetch recommendation');
-    return res.json();
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Error ${res.status}: ${errorText || res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data.category as string;
 }
-
 
 export async function getUserCards() {
   // Simulate delay

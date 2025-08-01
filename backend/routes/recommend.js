@@ -1,25 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 
-// recommendation logic
+// Stubbed category matcher using keyword
 router.post('/', (req, res) => {
-    const { description } = req.body;
+  const { description } = req.body;
 
-    // TESTING: just keyword check
-    const category = description.toLowerCase().includes('hotel') ? 'travel' : 'other';
+  const lower = description.toLowerCase();
+  let category = 'Other';
 
-    const cardData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/testCards.json'), 'utf8'));
+  if (lower.includes('hotel') || lower.includes('flight') || lower.includes('airline') || lower.includes('travel')) {
+    category = 'Travel';
+  } else if (lower.includes('dining') || lower.includes('restaurant') || lower.includes('food')) {
+    category = 'Dining';
+  } else if (lower.includes('grocery') || lower.includes('supermarket')) {
+    category = 'Grocery';
+  } else if (lower.includes('gas')) {
+    category = 'Gas';
+  }
 
-    const recommendedCard = cardData.find(card => card.categories.includes(category)) || cardData[0];
-
-    res.json({
-        category,
-        bestCard: recommendedCard.name,
-        reward: recommendedCard.rewards[category] || '1x',
-        reasoning: `${recommendedCard.name} offers ${recommendedCard.rewards[category] || '1x'} on ${category}`,
-    });
+  res.json({ category });
 });
 
 module.exports = router;
