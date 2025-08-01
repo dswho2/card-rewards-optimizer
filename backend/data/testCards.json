@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Chase Sapphire Preferred",
+    "categories": ["travel", "dining"],
+    "rewards": {
+      "travel": "5x",
+      "dining": "3x",
+      "other": "1x"
+    }
+  },
+  {
+    "name": "Citi Custom Cash",
+    "categories": ["groceries", "gas"],
+    "rewards": {
+      "groceries": "5x",
+      "gas": "5x",
+      "other": "1x"
+    }
+  }
+]
