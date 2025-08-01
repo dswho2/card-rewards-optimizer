@@ -16,7 +16,6 @@ import {
   useSortable,
   arrayMove,
   verticalListSortingStrategy,
-  horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -46,29 +45,6 @@ const allCategories = [
   'Utilities',
 ];
 
-function DraggableHeader({ id, children }: { id: string; children: React.ReactNode }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-  const lockedTransform = transform
-    ? { ...transform, y: 0, scaleX: 1, scaleY: 1 }
-    : { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-  const style = {
-    transform: CSS.Transform.toString(lockedTransform),
-    transition,
-  };
-
-  return (
-    <th
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={style}
-      className="p-2 text-left w-[120px] cursor-move"
-    >
-      {children}
-    </th>
-  );
-}
-
 function DraggableRow({ id, children }: { id: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const lockedTransform = transform
@@ -92,8 +68,12 @@ function DraggableRow({ id, children }: { id: string; children: React.ReactNode 
   );
 }
 
-
 export default function CoverageVisualizer({ cards }: Props) {
+  const [sortedCards, setSortedCards] = useState<Card[]>(cards);
+
+  useEffect(() => {
+    setSortedCards(cards);
+  }, [cards]);
   const { theme } = useTheme();
   const [hoveredCategoryIndex, setHoveredCategoryIndex] = useState<number | null>(null);
   const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
@@ -101,7 +81,6 @@ export default function CoverageVisualizer({ cards }: Props) {
   const [visibleCategories, setVisibleCategories] = useState<string[]>(allCategories);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [cardOrder, setCardOrder] = useState(cards.map((c) => c.id));
   const [categoryOrder, setCategoryOrder] = useState(allCategories);
 
   const sensors = useSensors(
@@ -120,6 +99,7 @@ export default function CoverageVisualizer({ cards }: Props) {
 
   const handleSelectAll = () => setVisibleCategories([...allCategories]);
   const handleClearAll = () => setVisibleCategories([]);
+  const handleResetCategoryOrder = () => setCategoryOrder(allCategories);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -137,18 +117,13 @@ export default function CoverageVisualizer({ cards }: Props) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    if (cardOrder.includes(active.id as string)) {
-      const oldIndex = cardOrder.indexOf(active.id as string);
-      const newIndex = cardOrder.indexOf(over.id as string);
-      setCardOrder(arrayMove(cardOrder, oldIndex, newIndex));
-    } else if (categoryOrder.includes(active.id as string)) {
+    if (categoryOrder.includes(active.id as string)) {
       const oldIndex = categoryOrder.indexOf(active.id as string);
       const newIndex = categoryOrder.indexOf(over.id as string);
       setCategoryOrder(arrayMove(categoryOrder, oldIndex, newIndex));
     }
   };
 
-  const sortedCards = cardOrder.map((id) => cards.find((c) => c.id === id)!);
   const sortedCategories = categoryOrder.filter((cat) => visibleCategories.includes(cat));
 
   return (
@@ -162,12 +137,45 @@ export default function CoverageVisualizer({ cards }: Props) {
             >
               Category <span className="text-sm">▼</span>
             </button>
+                        <button
+              className="mt-1 p-1 w-[130px] sticky left-0 bg-zinc-100 dark:bg-zinc-800 text-sm text-center border border-zinc-300 dark:border-zinc-700 rounded"
+              onClick={() => {
+                const bestCardsPerCategory = sortedCategories.map((category) => {
+                  let bestCard = cards[0];
+                  let bestReward = 0;
+                  for (const card of cards) {
+                    const reward = Math.max(
+                      card.rewards[category as keyof Rewards] ?? 0,
+                      card.rewards['All'] ?? 0
+                    );
+                    if (reward > bestReward) {
+                      bestReward = reward;
+                      bestCard = card;
+                    }
+                  }
+                  return bestCard.id;
+                });
+
+                const uniqueBestOrder = Array.from(new Set(bestCardsPerCategory));
+                const remaining = cards.map(c => c.id).filter(id => !uniqueBestOrder.includes(id));
+                const newOrder = [...uniqueBestOrder, ...remaining];
+
+                const reordered = newOrder.map(id => cards.find(c => c.id === id)!);
+                setSortedCards(reordered);
+              }}
+            >
+              Sort Cards
+            </button>
             {dropdownOpen && (
               <div className="absolute top-full left-0 mt-1 p-2 bg-white dark:bg-gray-800 shadow-md rounded border border-gray-300 dark:border-gray-700 w-48">
                 <div className="flex justify-between mb-2 text-sm font-semibold">
                   <button onClick={handleSelectAll} className="text-blue-600 hover:underline">Select All</button>
                   <button onClick={handleClearAll} className="text-red-500 hover:underline">Clear All</button>
                 </div>
+                <button onClick={handleResetCategoryOrder} className="mb-2 w-full text-center text-blue-600 hover:underline text-sm">
+                  Reset Category Order
+                </button>
+                
                 {allCategories.map((cat) => (
                   <label key={cat} className="flex items-center space-x-2">
                     <input
@@ -185,16 +193,14 @@ export default function CoverageVisualizer({ cards }: Props) {
 
         <table className="w-full table-fixed border-separate border-spacing-0 mt-10">
           <thead>
-            <SortableContext items={cardOrder} strategy={horizontalListSortingStrategy}>
-              <tr>
-                <th className="p-2 text-left w-[130px] sticky left-0 bg-white dark:bg-slate-950"></th>
-                {sortedCards.map((card) => (
-                  <DraggableHeader key={card.id} id={card.id}>
-                    {card.name}
-                  </DraggableHeader>
-                ))}
-              </tr>
-            </SortableContext>
+            <tr>
+              <th className="p-2 text-left w-[130px] sticky left-0 bg-white dark:bg-slate-950"></th>
+              {sortedCards.map((card) => (
+                <th key={card.id} className="p-2 text-left w-[120px]">
+                  {card.name}
+                </th>
+              ))}
+            </tr>
           </thead>
           <SortableContext items={sortedCategories} strategy={verticalListSortingStrategy}>
             <tbody>
