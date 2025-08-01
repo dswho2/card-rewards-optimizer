@@ -188,3 +188,69 @@ The heatmap is structured as a **grid**:
   selectedCards: ["amex_blue_cash_preferred", "chase_freedom_flex"]
 }
 ```
+
+
+
+
+
+## Category Coverage Visualizer – Feature Roadmap
+
+This table visualizes how well each credit card covers various spending categories, helping users quickly determine which card to use for a given purchase. Below is the ranked list of current and planned features for the visualizer.
+
+---
+
+### MVP Features (Core & High Priority)
+
+1. **Highlight Best Reward per Category**
+   - Visually emphasize the best card(s) for each category (e.g. bold, colored badge, 🥇).
+   - Helps users immediately identify which card to use for any purchase type.
+
+2. **Hover Interactions**
+   - **Hover on card name**: dims other cards to focus attention.
+   - **Hover on category**: highlights the full row to clarify reward options.
+
+3. **Click to View Card Details**
+   - Opens a modal or side panel with full information:
+     - Reward structure
+     - Issuer
+     - Annual fees
+     - Bonuses or caveats
+
+4. **Category Coverage Summary**
+   - Sidebar or tooltip summary showing:
+     - Number of cards that cover each category
+     - Highest reward available
+     - Optionally: user’s current best card for that category
+
+5. **Responsive Scroll + Sticky First Column**
+   - Maintains visibility of category names during horizontal scrolling.
+   - Critical for good UX when users have many cards.
+
+---
+
+### Nice-to-Have Features (Optional or Advanced)
+
+6. **Filter Cards by Category**
+   - Filter view to only show cards offering:
+     - Specific reward thresholds (e.g. "≥3x Dining")
+     - Specific categories (e.g. "Only show Transit rewards")
+
+7. **Pin or Focus Mode**
+   - Allow users to "pin" cards or categories they care about.
+   - Useful for power users comparing a few key cards.
+
+8. **Simulate Purchase Tool**
+   - Input category + amount → highlight the best card(s) and show expected reward (e.g. "You’d earn $4.50 using this card").
+
+9. **Suggest Cards to Fill Gaps**
+   - Highlight categories with weak or no coverage.
+   - Recommend new cards to fill reward gaps.
+
+10. **Custom Color Themes / Accessibility Mode**
+    - Support for heatmap color mode, high-contrast, or colorblind-friendly palettes.
+
+11. **Time-Based Reward Visualization**
+    - Support rotating categories or intro offers (e.g. 5% cash back on Gas in Q2).
+    - Option to toggle time-based views with a calendar selector.
+
+---
