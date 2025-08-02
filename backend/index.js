@@ -1,18 +1,25 @@
 require('dotenv').config();
 
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
-const recommendRoute = require('./routes/recommend')
-const userRoute = require('./routes/user')
+const recommendRoute = require('./routes/recommend');
+const userRoute = require('./routes/user');
 
-const app = express()
+const app = express();
 
-// Middleware
+// Request logger for debugging
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.path}`);
+  next();
+});
+
+// CORS setup
 const allowedOrigins = [
   'http://localhost:3000',
-  process.env.FRONTEND_ORIGIN, // 'https://card-optimizer.vercel.app'
+  'https://card-optimizer.vercel.app',
+  process.env.FRONTEND_ORIGIN, // in case this is defined
 ];
 
 app.use(cors({
@@ -23,9 +30,12 @@ app.use(cors({
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
-  optionsSuccessStatus: 200
 }));
+
+// Enable preflight requests for all routes
 app.options('*', cors());
+
+// JSON parsing
 app.use(bodyParser.json());
 
 // Routes
@@ -34,13 +44,14 @@ app.use('/api/user-cards', userRoute);
 
 // Root ping
 app.get('/', (req, res) => {
-    console.log('Received GET /');
-    res.send('Backend running');
+  console.log('Received GET /');
+  res.send('Backend running');
 });
 
-// Start server
+// Export serverless handler
 module.exports = app;
-// // local tested
+// Uncomment for local testing:
+// const PORT = process.env.PORT || 3001;
 // app.listen(PORT, () => {
-//     console.log(`Server running at http://localhost:${PORT}`);
+//   console.log(`Server running at http://localhost:${PORT}`);
 // });
