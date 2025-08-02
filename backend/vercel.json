@@ -4,6 +4,8 @@
     { "src": "api/index.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/:match*", "dest": "/api/index.js" }
+    { "src": "/recommend-card", "dest": "/api/index.js" },
+    { "src": "/user-cards", "dest": "/api/index.js" },
+    { "src": "/", "dest": "/api/index.js" }
   ]
 }
