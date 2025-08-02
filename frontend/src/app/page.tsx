@@ -48,8 +48,12 @@ export default function Home() {
       });
 
       setBestCards(matching);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Something went wrong');
+      }
     } finally {
       setLoading(false);
     }
@@ -57,7 +61,7 @@ export default function Home() {
 
   return (
     <main className="p-6 max-w-3xl mx-auto text-center">
-      <h1 className="text-3xl font-bold mb-4">What's your purchase?</h1>
+      <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
 
       <form onSubmit={handleSubmit}>
         <input

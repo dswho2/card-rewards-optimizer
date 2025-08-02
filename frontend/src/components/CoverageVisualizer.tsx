@@ -1,7 +1,6 @@
 // src/components/CoverageVisualizer.tsx
 "use client";
 
-import { useTheme } from 'next-themes';
 import { useState, useEffect, useRef } from 'react';
 import {
   DndContext,
@@ -74,7 +73,6 @@ export default function CoverageVisualizer({ cards }: Props) {
   useEffect(() => {
     setSortedCards(cards);
   }, [cards]);
-  const { theme } = useTheme();
   const [hoveredCategoryIndex, setHoveredCategoryIndex] = useState<number | null>(null);
   const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
