@@ -3,7 +3,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
 export const getCardRec = async (description: string) => {
-  const res = await fetch('${API_BASE_URL}/api/recommend-card', {
+  const res = await fetch(`${API_BASE_URL}/api/recommend-card`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ description }),
