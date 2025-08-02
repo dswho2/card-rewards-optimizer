@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -9,7 +11,20 @@ const app = express()
 const PORT = 4000;
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.FRONTEND_ORIGIN, // 'https://card-optimizer.vercel.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 app.use(bodyParser.json());
 
 // Routes
@@ -22,6 +37,8 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+module.exports = app;
+// // local tested
+// app.listen(PORT, () => {
+//     console.log(`Server running at http://localhost:${PORT}`);
+// });
