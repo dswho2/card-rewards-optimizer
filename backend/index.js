@@ -58,9 +58,12 @@ app.use('/recommend-card', recommendRoute);
 app.use('/user-cards', userRoute);
 
 // Root ping
+// app.get('/', (req, res) => {
+//   res.send('Backend running');
+// });
 app.get('/', (req, res) => {
   console.log('Received GET /');
-  res.send('Backend running');
+  res.status(200).json({ ok: true });
 });
 
 // Export serverless handler
