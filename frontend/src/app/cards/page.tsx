@@ -21,7 +21,12 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-function SortableCard({ card, editMode }: any) {
+interface SortableCardProps {
+  card: Card;
+  editMode: boolean;
+}
+
+function SortableCard({ card, editMode }: SortableCardProps) {
   const {
     attributes,
     listeners,
@@ -58,7 +63,7 @@ export default function CardsPage() {
       setCards(fetched);
     };
     loadCards();
-  }, []);
+  }, [setCards]);
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
