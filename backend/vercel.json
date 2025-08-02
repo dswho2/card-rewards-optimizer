@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/index.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/recommend-card", "dest": "/api/index.js" },
-    { "src": "/user-cards", "dest": "/api/index.js" },
-    { "src": "/", "dest": "/api/index.js" }
-  ]
+  "builds": [{ "src": "api/index.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/:path*", "dest": "/api/index.js" }]
 }
