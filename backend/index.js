@@ -8,7 +8,6 @@ const recommendRoute = require('./routes/recommend')
 const userRoute = require('./routes/user')
 
 const app = express()
-const PORT = 4000;
 
 // Middleware
 const allowedOrigins = [
