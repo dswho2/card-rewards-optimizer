@@ -18,7 +18,8 @@ app.use((req, res, next) => {
 // CORS setup
 const allowedOrigins = [
   'http://localhost:3000',
-  process.env.FRONTEND_ORIGIN, // 'https://card-optimizer.vercel.app'
+  'https://card-optimizer.vercel.app',
+  process.env.FRONTEND_ORIGIN,
 ];
 
 app.use(cors({
@@ -54,8 +55,8 @@ app.options(
 app.use(express.json());
 
 // Routes
-app.use('/recommend-card', recommendRoute);
-app.use('/user-cards', userRoute);
+app.use('/api/recommend-card', recommendRoute);
+app.use('/api/user-cards', userRoute);
 
 // Root ping
 // app.get('/', (req, res) => {
