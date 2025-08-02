@@ -18,29 +18,32 @@ app.use((req, res, next) => {
 // CORS setup
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://card-optimizer.vercel.app',
-  process.env.FRONTEND_ORIGIN, // in case this is defined
+  process.env.FRONTEND_ORIGIN, // 'https://card-optimizer.vercel.app'
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: allowedOrigins,
   credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
 }));
 
-// Enable preflight requests for all routes
-app.options('*', cors());
+app.options(
+  '*',
+  cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+  }),
+  (req, res) => res.sendStatus(204)
+);
 
 // JSON parsing
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api/recommend-card', recommendRoute);
-app.use('/api/user-cards', userRoute);
+app.use('/recommend-card', recommendRoute);
+app.use('/user-cards', userRoute);
 
 // Root ping
 app.get('/', (req, res) => {
