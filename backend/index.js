@@ -1,8 +1,8 @@
+// index.js
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 
 const recommendRoute = require('./routes/recommend');
 const userRoute = require('./routes/user');
@@ -22,7 +22,13 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
@@ -31,7 +37,13 @@ app.use(cors({
 app.options(
   '*',
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
   }),
@@ -39,7 +51,7 @@ app.options(
 );
 
 // JSON parsing
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Routes
 app.use('/recommend-card', recommendRoute);
@@ -53,8 +65,9 @@ app.get('/', (req, res) => {
 
 // Export serverless handler
 module.exports = app;
+
 // Uncomment for local testing:
-// const PORT = process.env.PORT || 3001;
+// const PORT = process.env.PORT || 4000;
 // app.listen(PORT, () => {
 //   console.log(`Server running at http://localhost:${PORT}`);
 // });

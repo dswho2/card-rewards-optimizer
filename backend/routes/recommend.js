@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
 
   const { description } = req.body;
 
-  const lower = description.toLowerCase();
+  const lower = description?.toLowerCase() || '';
   let category = 'Other';
 
   if (lower.includes('hotel') || lower.includes('flight') || lower.includes('airline') || lower.includes('travel')) {
