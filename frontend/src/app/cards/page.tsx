@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import type { Card } from '@/types';
 
-import { getUserCards } from '@/api/user';
+import { getUserCards } from '@/app/api/user';
 import { useCardsStore } from '@/store/useCardsStore';
 
 import CreditCardItem from '@/components/CreditCardItem';

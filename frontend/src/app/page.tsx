@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getUserCards, getCardRec } from '@/api/user';
+import { getUserCards, getCardRec } from '@/app/api/user';
 import CreditCardItem from '@/components/CreditCardItem';
 import type { Card, Category } from '@/types';
 
