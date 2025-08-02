@@ -1,3 +1,4 @@
+console.log('Express app starting...');
 require('dotenv').config();
 
 const express = require('express')
@@ -32,6 +33,7 @@ app.use('/api/user-cards', userRoute);
 
 // Root ping
 app.get('/', (req, res) => {
+    console.log('Received GET /');
     res.send('Backend running');
 });
 
