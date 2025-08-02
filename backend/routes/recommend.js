@@ -3,6 +3,9 @@ const router = express.Router();
 
 // Stubbed category matcher using keyword
 router.post('/', (req, res) => {
+  console.log('Received POST /api/recommend-card');
+  console.log('Body:', req.body);
+
   const { description } = req.body;
 
   const lower = description.toLowerCase();
