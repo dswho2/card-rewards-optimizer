@@ -1,5 +1,7 @@
 // src/api/auth.ts
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+
 export async function loginOrSignup({
   username,
   password,
@@ -9,7 +11,7 @@ export async function loginOrSignup({
   password: string;
   isLogin: boolean;
 }): Promise<{ success: boolean; message?: string; token?: string }> {
-  const endpoint = isLogin ? '/api/login' : '/api/signup';
+  const endpoint = isLogin ? `${API_BASE_URL}/api/login` : `${API_BASE_URL}/api/signup`;
 
   try {
     const res = await fetch(endpoint, {
