@@ -5,11 +5,15 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import LoginModal from './LoginModal';
 
+import { useRouter } from 'next/navigation';
+
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -20,6 +24,7 @@ export default function Navbar() {
   const handleSignOut = () => {
     localStorage.removeItem('auth_token');
     setIsLoggedIn(false);
+    router.refresh();
   };
 
   const handleLoginClose = () => {
