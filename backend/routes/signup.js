@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await sql`INSERT INTO users (username, password) VALUES (${username}, ${hashedPassword})`;
+    await sql`INSERT INTO users (username, hashed_password) VALUES (${username}, ${hashedPassword})`;
 
     return res.status(201).json({ success: true });
   } catch (err) {

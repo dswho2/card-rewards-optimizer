@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing credentials' });
     }
 
-    const result = await sql`SELECT id, password FROM users WHERE username = ${username}`;
+    const result = await sql`SELECT id, hashed_password FROM users WHERE username = ${username}`;
     const user = result.rows[0];
 
     if (!user) {
