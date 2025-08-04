@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <main className="p-6 max-w-3xl mx-auto text-center">
         <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
-        <p className="text-gray-600 dark:text-gray-300">You don&apos;t have any cards saved. Go to the Cards page to add one.</p>
+        <p className="text-gray-600 dark:text-gray-300">You don&apos;t have any cards saved. Go to the My Cards page to add one.</p>
       </main>
     );
   }

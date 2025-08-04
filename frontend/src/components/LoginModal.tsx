@@ -23,6 +23,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       if (response.token) {
         localStorage.setItem('auth_token', response.token);
         await loadUserCardsToStore();
+        window.location.reload();
       }
       onClose();
     } else {
