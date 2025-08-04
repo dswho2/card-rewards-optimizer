@@ -38,7 +38,7 @@ export const saveUserCards = async (cards: Card[]) => {
   return data;
 };
 
-export const getCardRec = async (description: string) => {
+export const getCardRec = async (description: string): Promise<string> => {
   const token = localStorage.getItem('auth_token');
 
   const res = await fetch(`${API_BASE_URL}/api/recommend-card`, {
@@ -51,5 +51,7 @@ export const getCardRec = async (description: string) => {
   });
 
   if (!res.ok) throw new Error('Failed to get recommendation');
-  return res.json();
+  
+  const { data }: { data: { category: string } } = await res.json();
+  return data.category;
 };
