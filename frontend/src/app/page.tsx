@@ -1,7 +1,7 @@
 // src/app/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getCardRec } from '@/app/api/user';
 import { useCardsStore } from '@/store/useCardsStore';
 import CreditCardItem from '@/components/CreditCardItem';
@@ -13,7 +13,14 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [bestCards, setBestCards] = useState<Card[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const cards = useCardsStore((state) => state.cards);
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +29,11 @@ export default function Home() {
     setBestCards([]);
 
     if (!input.trim()) return;
+
+    if (!cards.length) {
+      setError('You need to add cards before getting a recommendation.');
+      return;
+    }
 
     setLoading(true);
 
@@ -53,6 +65,24 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  if (!isLoggedIn) {
+    return (
+      <main className="p-6 max-w-3xl mx-auto text-center">
+        <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
+        <p className="text-gray-600 dark:text-gray-300">Log in to get personalized card recommendations.</p>
+      </main>
+    );
+  }
+
+  if (!cards.length) {
+    return (
+      <main className="p-6 max-w-3xl mx-auto text-center">
+        <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
+        <p className="text-gray-600 dark:text-gray-300">You don&apos;t have any cards saved. Go to the Cards page to add one.</p>
+      </main>
+    );
+  }
 
   return (
     <main className="p-6 max-w-3xl mx-auto text-center">

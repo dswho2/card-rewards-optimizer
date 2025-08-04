@@ -67,6 +67,18 @@ export default function CardsPage() {
     );
   }
 
+  if (cards.length === 0) {
+    return (
+      <main className="p-6 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
+        <p className="text-gray-600 dark:text-gray-300">You don&apos;t have any cards saved yet. Click "Add New Card" to get started.</p>
+        <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Add New Card
+        </button>
+      </main>
+    );
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active.id !== over?.id) {
