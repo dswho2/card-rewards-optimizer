@@ -24,7 +24,7 @@ export async function loginOrSignup({
       message: data.message,
       token: data.token,
     };
-  } catch (err) {
+  } catch (_) {
     return { success: false, message: 'Server error' };
   }
 }
