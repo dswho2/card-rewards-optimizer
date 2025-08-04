@@ -2,7 +2,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getUserCards, getCardRec } from '@/app/api/user';
+import { getCardRec } from '@/app/api/user';
+import { useCardsStore } from '@/store/useCardsStore';
 import CreditCardItem from '@/components/CreditCardItem';
 import type { Card, Category } from '@/types';
 
@@ -10,13 +11,9 @@ export default function Home() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [userCards, setUserCards] = useState<Card[]>([]);
   const [category, setCategory] = useState<string | null>(null);
   const [bestCards, setBestCards] = useState<Card[]>([]);
-
-  useEffect(() => {
-    getUserCards().then(setUserCards);
-  }, []);
+  const cards = useCardsStore((state) => state.cards);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +31,13 @@ export default function Home() {
 
       const key = matchedCategory as Category;
 
-      // Find max reward
       let maxReward = 0;
-      for (const card of userCards) {
+      for (const card of cards) {
         const reward = card.rewards[key] ?? card.rewards['All'] ?? 0;
         if (reward > maxReward) maxReward = reward;
       }
 
-      // Get all cards that match the max reward
-      const matching = userCards.filter((card) => {
+      const matching = cards.filter((card) => {
         const reward = card.rewards[key] ?? card.rewards['All'] ?? 0;
         return reward === maxReward && reward > 0;
       });

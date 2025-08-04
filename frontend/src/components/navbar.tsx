@@ -4,23 +4,35 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import LoginModal from './LoginModal';
-import { useSession, signOut } from 'next-auth/react';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const { data: session } = useSession();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    const token = localStorage.getItem('auth_token');
+    setIsLoggedIn(!!token);
   }, []);
+
+  const handleSignOut = () => {
+    localStorage.removeItem('auth_token');
+    setIsLoggedIn(false);
+  };
+
+  const handleLoginClose = () => {
+    const token = localStorage.getItem('auth_token');
+    setIsLoggedIn(!!token);
+    setShowLogin(false);
+  };
 
   if (!mounted) return null;
 
   return (
     <>
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showLogin && <LoginModal onClose={handleLoginClose} />}
 
       <nav className="flex justify-between items-center p-4 border-b dark:border-gray-700">
         <div className="flex gap-4 items-center">
@@ -37,18 +49,13 @@ export default function Navbar() {
             Toggle {theme === 'dark' ? 'Light' : 'Dark'} Mode
           </button>
 
-          {session ? (
-            <>
-              <span className="text-sm text-gray-600 dark:text-gray-300">
-                {session.user?.name || session.user?.email}
-              </span>
-              <button
-                onClick={() => signOut()}
-                className="text-sm px-3 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                Sign Out
-              </button>
-            </>
+          {isLoggedIn ? (
+            <button
+              onClick={handleSignOut}
+              className="text-sm px-3 py-1 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              Sign Out
+            </button>
           ) : (
             <button
               onClick={() => setShowLogin(true)}

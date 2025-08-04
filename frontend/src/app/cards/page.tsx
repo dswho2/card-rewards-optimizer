@@ -3,10 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import type { Card } from '@/types';
-
-import { getUserCards } from '@/app/api/user';
 import { useCardsStore } from '@/store/useCardsStore';
-
 import CreditCardItem from '@/components/CreditCardItem';
 import {
   DndContext,
@@ -53,24 +50,29 @@ function SortableCard({ card, editMode }: SortableCardProps) {
 
 export default function CardsPage() {
   const [editMode, setEditMode] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cards = useCardsStore((state) => state.cards);
-  const setCards = useCardsStore((state) => state.setCards);
 
   useEffect(() => {
-    const loadCards = async () => {
-      const fetched: Card[] = await getUserCards();
-      setCards(fetched);
-    };
-    loadCards();
-  }, [setCards]);
+    const token = localStorage.getItem('auth_token');
+    setIsLoggedIn(!!token);
+  }, []);
+
+  if (!isLoggedIn) {
+    return (
+      <main className="p-6 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
+        <p className="text-gray-600 dark:text-gray-300">Log in to view and manage your saved cards.</p>
+      </main>
+    );
+  }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active.id !== over?.id) {
       const oldIndex = cards.findIndex(c => c.id === active.id);
       const newIndex = cards.findIndex(c => c.id === over?.id);
-      setCards(arrayMove(cards, oldIndex, newIndex));
+      useCardsStore.getState().setCards(arrayMove(cards, oldIndex, newIndex));
     }
   }
 

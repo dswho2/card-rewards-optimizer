@@ -1,31 +1,32 @@
 // src/components/LoginModal.tsx
-
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { loginOrSignup } from '../app/api/auth';
+import { loadUserCardsToStore } from '@/lib/loadUserCards';
 
 export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const res = await signIn('credentials', {
-      redirect: false,
-      username,
-      password,
-    });
+    const response = await loginOrSignup({ username, password, isLogin });
 
-    if (res?.ok) {
+    if (response.success) {
+      if (response.token) {
+        localStorage.setItem('auth_token', response.token);
+        await loadUserCardsToStore();
+      }
       onClose();
     } else {
-      setError('Invalid username or password');
+      setError(response.message || 'Something went wrong');
     }
 
     setLoading(false);
@@ -34,7 +35,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-md text-center w-80">
-        <h2 className="text-xl font-semibold mb-4">Sign In</h2>
+        <h2 className="text-xl font-semibold mb-4">{isLogin ? 'Sign In' : 'Sign Up'}</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
@@ -59,11 +60,21 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Sign In'}
+            {loading ? (isLogin ? 'Logging in...' : 'Signing up...') : (isLogin ? 'Sign In' : 'Sign Up')}
           </button>
         </form>
 
         {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
+
+        <p className="mt-4 text-sm">
+          {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+          <button
+            onClick={() => setIsLogin(!isLogin)}
+            className="underline text-blue-600 hover:text-blue-800"
+          >
+            {isLogin ? 'Sign Up' : 'Sign In'}
+          </button>
+        </p>
 
         <button
           onClick={onClose}
