@@ -10,6 +10,8 @@ const userRoute = require('./routes/user');
 const signupRoute = require('./routes/signup');
 const loginRoute = require('./routes/login');
 
+const cardsRoute = require('./routes/cards');
+
 const app = express();
 
 // Request logger for debugging
@@ -62,6 +64,7 @@ app.use('/api/recommend-card', recommendRoute);
 app.use('/api/user-cards', userRoute);
 app.use('/api/signup', signupRoute);
 app.use('/api/login', loginRoute);
+app.use('/api/cards', cardsRoute);
 
 // Root ping
 // app.get('/', (req, res) => {

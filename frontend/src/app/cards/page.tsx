@@ -6,6 +6,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import type { Card } from '@/types';
 import { useCardsStore } from '@/store/useCardsStore';
 import CreditCardItem from '@/components/CreditCardItem';
+import AddCardModal from '@/components/AddCardModal';
 import {
   DndContext,
   closestCenter,
@@ -51,26 +52,31 @@ function SortableCard({ card, editMode }: SortableCardProps) {
 
 export default function CardsPage() {
   const [editMode, setEditMode] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const cards = useCardsStore((state) => state.cards);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
-  if (!isLoggedIn) {
-    return (
-      <main className="p-6 max-w-2xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
-        <p className="text-gray-600 dark:text-gray-300">Log in to view and manage your saved cards.</p>
-      </main>
-    );
-  }
+  // if (!isLoggedIn) {
+  //   return (
+  //     <main className="p-6 max-w-2xl mx-auto">
+  //       <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
+  //       <p className="text-gray-600 dark:text-gray-300">Log in to view and manage your saved cards.</p>
+  //     </main>
+  //   );
+  // }
 
   if (cards.length === 0) {
     return (
       <main className="p-6 max-w-2xl mx-auto">
         <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
         <p className="text-gray-600 dark:text-gray-300">You don&apos;t have any cards saved yet. Click &quot;Add New Card&quot; to get started.</p>
-        <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button
+          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={() => setShowModal(true)}
+        >
           Add New Card
         </button>
+        {showModal && <AddCardModal onClose={() => setShowModal(false)} />}
       </main>
     );
   }
@@ -105,10 +111,15 @@ export default function CardsPage() {
         >
           {editMode ? 'Cancel' : 'Edit Cards'}
         </button>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={() => setShowModal(true)}
+        >
           Add New Card
         </button>
       </div>
+
+      {showModal && <AddCardModal onClose={() => setShowModal(false)} />}
     </main>
   );
 }

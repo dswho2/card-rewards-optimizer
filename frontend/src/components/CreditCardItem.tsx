@@ -32,7 +32,7 @@ export default function CreditCardItem({ card, editMode }: CardProps) {
             </>
             )}
         <img
-            src={card.image}
+            src={card.image_url}
             alt={card.name}
             className="w-full md:w-48 h-auto object-contain border rounded"
         />
@@ -45,7 +45,7 @@ export default function CreditCardItem({ card, editMode }: CardProps) {
                 .join(', ')}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-            <strong>Annual Fee:</strong> {card.annualFee}
+            <strong>Annual Fee:</strong> {card.annual_fee}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-300">
             <strong>Notes:</strong> {card.notes}

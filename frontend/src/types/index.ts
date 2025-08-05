@@ -18,8 +18,8 @@ export type Rewards = {
 export interface Card {
   id: string;
   name: string;
-  image: string;
+  image_url: string;
   rewards: Rewards;
-  annualFee: string;
+  annual_fee: number;
   notes: string;
 }
