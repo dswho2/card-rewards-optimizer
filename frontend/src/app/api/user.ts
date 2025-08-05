@@ -4,7 +4,7 @@ import type { Card } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
-export const getUserCards = async () => {
+export const getUserCards = async (): Promise<Card[]> => {
   const token = localStorage.getItem('auth_token');
 
   const res = await fetch(`${API_BASE_URL}/api/user-cards`, {
@@ -15,7 +15,9 @@ export const getUserCards = async () => {
   });
 
   if (!res.ok) throw new Error('Failed to fetch user cards');
-  return res.json();
+
+  const data = await res.json();
+  return data.cards;
 };
 
 export const saveUserCards = async (cards: Card[]) => {
