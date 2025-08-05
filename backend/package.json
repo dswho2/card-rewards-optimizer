@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "init-db": "ts-node scripts/initSchema.ts"
+    "init-db": "ts-node scripts/initSchema.ts",
+    "import-cards": "ts-node scripts/importCards.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,8 @@
     "dotenv": "^17.2.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/pg": "^8.15.5",
