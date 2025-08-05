@@ -1,6 +1,6 @@
 // backend/routes/cards.js
-import express from 'express';
-import pool from '../lib/db.js';
+const express = require('express');
+const pool = require('../lib/db');
 
 const router = express.Router();
 
@@ -52,4 +52,4 @@ router.get('/', async (req, res) => {
   res.json({ cards: filteredCards });
 });
 
-export default router;
+module.exports = router;
