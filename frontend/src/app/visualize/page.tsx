@@ -1,18 +1,13 @@
 // src/app/visualize/page.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
 import { useCardsStore } from '@/store/useCardsStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import CoverageVisualizer from '@/components/CoverageVisualizer';
 
 export default function VisualizePage() {
   const cards = useCardsStore((state) => state.cards);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    if (token) setIsLoggedIn(true);
-  }, []);
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
   if (!isLoggedIn) {
     return (

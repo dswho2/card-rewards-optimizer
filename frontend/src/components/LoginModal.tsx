@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { loginOrSignup } from '../app/api/auth';
 import { loadUserCardsToStore } from '@/lib/loadUserCards';
-import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [username, setUsername] = useState('');
@@ -13,7 +13,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
 
-  const router = useRouter();
+  const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       if (response.token) {
         localStorage.setItem('auth_token', response.token);
         await loadUserCardsToStore();
-        router.refresh();
+        setLoggedIn(true);
       }
       onClose();
     } else {

@@ -1,6 +1,7 @@
 // src/app/cards/page.tsx
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
 
 import type { Card } from '@/types';
 import { useCardsStore } from '@/store/useCardsStore';
@@ -50,13 +51,8 @@ function SortableCard({ card, editMode }: SortableCardProps) {
 
 export default function CardsPage() {
   const [editMode, setEditMode] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cards = useCardsStore((state) => state.cards);
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    setIsLoggedIn(!!token);
-  }, []);
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
   if (!isLoggedIn) {
     return (

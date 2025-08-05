@@ -1,10 +1,11 @@
 // src/app/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getCardRec } from '@/app/api/user';
 import { useCardsStore } from '@/store/useCardsStore';
 import CreditCardItem from '@/components/CreditCardItem';
+import { useAuthStore } from '@/store/useAuthStore';
 import type { Card, Category } from '@/types';
 
 export default function Home() {
@@ -13,14 +14,9 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [bestCards, setBestCards] = useState<Card[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const cards = useCardsStore((state) => state.cards);
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    setIsLoggedIn(!!token);
-  }, []);
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
