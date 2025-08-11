@@ -46,4 +46,19 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
+// Remove a card from the user's saved collection
+router.delete('/:cardId', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const { cardId } = req.params;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    await pool.query('DELETE FROM user_cards WHERE user_id = $1 AND card_id = $2', [userId, cardId]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting user card:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

@@ -7,6 +7,7 @@ import type { Card } from '@/types';
 import { useCardsStore } from '@/store/useCardsStore';
 import CreditCardItem from '@/components/CreditCardItem';
 import AddCardModal from '@/components/AddCardModal';
+import { removeUserCard } from '@/app/api/user';
 import {
   DndContext,
   closestCenter,
@@ -23,9 +24,10 @@ import { CSS } from '@dnd-kit/utilities';
 interface SortableCardProps {
   card: Card;
   editMode: boolean;
+  onDelete: (id: string) => void;
 }
 
-function SortableCard({ card, editMode }: SortableCardProps) {
+function SortableCard({ card, editMode, onDelete }: SortableCardProps) {
   const {
     attributes,
     listeners,
@@ -45,7 +47,7 @@ function SortableCard({ card, editMode }: SortableCardProps) {
       style={style}
       {...(editMode ? { ...attributes, ...listeners } : {})}
     >
-      <CreditCardItem card={card} editMode={editMode} />
+      <CreditCardItem card={card} editMode={editMode} onDelete={onDelete} />
     </div>
   );
 }
@@ -53,7 +55,7 @@ function SortableCard({ card, editMode }: SortableCardProps) {
 export default function CardsPage() {
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const cards = useCardsStore((state) => state.cards);
+  const cards = useCardsStore((state) => state.cards);const removeCard = useCardsStore((state) => state.removeCard);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
   if (!isLoggedIn) {
@@ -90,6 +92,15 @@ export default function CardsPage() {
     }
   }
 
+  const handleDelete = async (cardId: string) => {
+    try {
+      await removeUserCard(cardId);
+      removeCard(cardId);
+    } catch (error) {
+      console.error('Failed to delete card:', error);
+    }
+  };
+
   return (
     <main className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6">Your Cards</h2>
@@ -98,7 +109,7 @@ export default function CardsPage() {
         <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
           <div className="flex flex-col gap-6">
             {cards.map((card) => (
-              <SortableCard key={card.id} card={card} editMode={editMode} />
+              <SortableCard key={card.id} card={card} editMode={editMode} onDelete={handleDelete} />
             ))}
           </div>
         </SortableContext>

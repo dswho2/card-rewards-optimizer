@@ -2,6 +2,11 @@
 
 import type { Card } from '@/types';
 
+export interface ApiCard extends Card {
+  issuer: string;
+  network: string;
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
 export const getUserCards = async (): Promise<Card[]> => {
@@ -20,24 +25,43 @@ export const getUserCards = async (): Promise<Card[]> => {
   return data.cards;
 };
 
-export const saveUserCards = async (cards: Card[]) => {
+export const saveUserCard = async (
+  cardId: string
+): Promise<{ success: boolean; message?: string }> => {
   const token = localStorage.getItem('auth_token');
 
   const res = await fetch(`${API_BASE_URL}/api/user-cards`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ cards }),
+    body: JSON.stringify({ card_id: cardId }),
   });
 
   const data: { success: boolean; message?: string } = await res.json();
   if (!res.ok || !data.success) {
-    throw new Error(data.message || 'Failed to save cards');
+    throw new Error(data.message || 'Failed to save card');
   }
 
   return data;
+};
+
+export const removeUserCard = async (cardId: string) => {
+  const token = localStorage.getItem('auth_token');
+
+  const res = await fetch(`${API_BASE_URL}/api/user-cards/${cardId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to delete card');
+  }
+
+  return res.json();
 };
 
 export const getCardRec = async (description: string): Promise<string> => {
@@ -56,4 +80,47 @@ export const getCardRec = async (description: string): Promise<string> => {
   
   const { data }: { data: { category: string } } = await res.json();
   return data.category;
+};
+
+export const addUserCard = async (cardId: string) => {
+  const token = localStorage.getItem('auth_token');
+
+  const res = await fetch(`${API_BASE_URL}/api/user-cards`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ card_id: cardId }),
+  });
+
+  const data: { success: boolean; message?: string } = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to add card');
+  }
+
+  return data;
+};
+
+export const searchCards = async (params: {
+  search?: string;
+  annual_fee?: string;
+  issuer?: string;
+  network?: string;
+  reward_category?: string;
+}): Promise<ApiCard[]> => {
+  const query = new URLSearchParams();
+  if (params.search) query.append('search', params.search);
+  if (params.annual_fee) query.append('annual_fee', params.annual_fee);
+  if (params.issuer) query.append('issuer', params.issuer);
+  if (params.network) query.append('network', params.network);
+  if (params.reward_category) query.append('reward_category', params.reward_category);
+
+  const res = await fetch(`${API_BASE_URL}/api/cards?${query.toString()}`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch cards');
+  }
+
+  const data = await res.json();
+  return data.cards || [];
 };

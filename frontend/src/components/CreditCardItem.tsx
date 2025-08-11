@@ -7,9 +7,10 @@ import type { Card } from '@/types';
 interface CardProps {
   card: Card;
   editMode: boolean;
+  onDelete?: (id: string) => void;
 }
 
-export default function CreditCardItem({ card, editMode }: CardProps) {
+export default function CreditCardItem({ card, editMode, onDelete }: CardProps) {
   return (
     <div className="relative flex flex-col md:flex-row gap-4 p-4 border rounded shadow dark:bg-gray-800">
         {editMode && (
@@ -18,6 +19,7 @@ export default function CreditCardItem({ card, editMode }: CardProps) {
                 <button
                 className="absolute top-1 left-1 text-red-600 hover:text-red-800"
                 aria-label="Delete card"
+                onClick={() => onDelete?.(card.id)}
                 >
                 <SquareX size={24} />
                 </button>

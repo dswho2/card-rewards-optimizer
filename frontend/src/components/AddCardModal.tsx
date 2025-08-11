@@ -4,12 +4,9 @@
 import { useEffect, useState } from 'react';
 import CreditCardItem from './CreditCardItem';
 import { useCardsStore } from '@/store/useCardsStore';
-import type { Card } from '@/types';
+import { saveUserCard } from '@/app/api/user';
 
-interface ApiCard extends Card {
-  issuer: string;
-  network: string;
-}
+import { addUserCard, searchCards, type ApiCard } from '@/app/api/user';
 
 export default function AddCardModal({ onClose }: { onClose: () => void }) {
   const [search, setSearch] = useState('');
@@ -32,16 +29,14 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
         return;
       }
       setLoading(true);
-      const params = new URLSearchParams();
-      if (search) params.append('search', search);
-      if (annualFee) params.append('annual_fee', annualFee);
-      if (issuer) params.append('issuer', issuer);
-      if (network) params.append('network', network);
-      if (rewardCategory) params.append('reward_category', rewardCategory);
-
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cards?${params.toString()}`)
-        .then((res) => res.json())
-        .then((data) => setSearchResults(data.cards || []))
+      searchCards({
+        search,
+        annual_fee: annualFee,
+        issuer,
+        network,
+        reward_category: rewardCategory,
+      })
+        .then(setSearchResults)
         .catch(() => setError('Failed to fetch cards'))
         .finally(() => setLoading(false));
     }, 300);
@@ -53,24 +48,14 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
     if (!selectedCard) return;
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-cards`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-        },
-        body: JSON.stringify({ card_id: selectedCard.id }),
-      });
-
-      const data: { success: boolean; message?: string } = await res.json();
-      if (res.ok && data.success) {
+      const data = await saveUserCard(selectedCard.id);
+      if (data.success) {
         setCards([...userCards, selectedCard]);
         onClose();
-      } else {
-        setError(data.message || 'Failed to add card');
       }
-    } catch {
-      setError('Failed to add card');
+    } catch (e) {
+      const err = e as Error;
+      setError(err.message || 'Failed to add card');
     } finally {
       setLoading(false);
     }
