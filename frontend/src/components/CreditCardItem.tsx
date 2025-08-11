@@ -40,9 +40,9 @@ export default function CreditCardItem({ card, editMode }: CardProps) {
             <h3 className="text-xl font-semibold mb-1">{card.name}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
             <strong>Rewards:</strong>{" "}
-            {card.rewards
-                ? Object.entries(card.rewards ?? {})
-                    .map(([category, multiplier]) => `${multiplier}x ${category}`)
+            {card.rewards && card.rewards.length > 0
+                ? card.rewards
+                    .map((reward) => `${reward.multiplier}x ${reward.category}`)
                     .join(', ')
                 : 'No rewards'}
             </p>

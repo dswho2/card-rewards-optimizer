@@ -4,26 +4,23 @@
 import { useEffect, useState } from 'react';
 import CreditCardItem from './CreditCardItem';
 import { useCardsStore } from '@/store/useCardsStore';
-import type { Reward } from '@/types';
+import type { Card } from '@/types';
 
-interface Card {
-  id: string;
-  name: string;
+interface ApiCard extends Card {
   issuer: string;
   network: string;
-  annual_fee: number;
-  image_url: string;
-  rewards: Reward[];
-  notes: string;
 }
 
 export default function AddCardModal({ onClose }: { onClose: () => void }) {
   const [search, setSearch] = useState('');
-  const [searchResults, setSearchResults] = useState<Card[]>([]);
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [searchResults, setSearchResults] = useState<ApiCard[]>([]);
+  const [selectedCard, setSelectedCard] = useState<ApiCard | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const userCards = useCardsStore((state) => state.cards);
+  const { cards: userCards, setCards } = useCardsStore((state) => ({
+    cards: state.cards,
+    setCards: state.setCards,
+  }));
 
   const [annualFee, setAnnualFee] = useState('');
   const [issuer, setIssuer] = useState('');
@@ -65,6 +62,7 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
       },
       body: JSON.stringify({ card_id: selectedCard.id }),
     });
+    setCards([...userCards, selectedCard]);
     setLoading(false);
     onClose();
   };

@@ -56,14 +56,14 @@ export default function CardsPage() {
   const cards = useCardsStore((state) => state.cards);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
-  // if (!isLoggedIn) {
-  //   return (
-  //     <main className="p-6 max-w-2xl mx-auto">
-  //       <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
-  //       <p className="text-gray-600 dark:text-gray-300">Log in to view and manage your saved cards.</p>
-  //     </main>
-  //   );
-  // }
+  if (!isLoggedIn) {
+    return (
+      <main className="p-6 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-4">Your Cards</h2>
+        <p className="text-gray-600 dark:text-gray-300">Log in to view and manage your saved cards.</p>
+      </main>
+    );
+  }
 
   if (cards.length === 0) {
     return (
