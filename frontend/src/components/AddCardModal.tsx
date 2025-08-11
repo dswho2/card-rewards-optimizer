@@ -54,17 +54,28 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
   const handleAddCard = async () => {
     if (!selectedCard) return;
     setLoading(true);
-    await fetch('/api/user-cards', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-      body: JSON.stringify({ card_id: selectedCard.id }),
-    });
-    setCards([...userCards, selectedCard]);
-    setLoading(false);
-    onClose();
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-cards`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+        body: JSON.stringify({ card_id: selectedCard.id }),
+      });
+
+      const data: { success: boolean; message?: string } = await res.json();
+      if (res.ok && data.success) {
+        setCards([...userCards, selectedCard]);
+        onClose();
+      } else {
+        setError(data.message || 'Failed to add card');
+      }
+    } catch {
+      setError('Failed to add card');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const alreadyOwned = selectedCard && userCards.some((c) => c.id === selectedCard.id);
