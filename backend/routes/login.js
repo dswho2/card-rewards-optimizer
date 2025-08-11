@@ -2,7 +2,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { sql } = require('@vercel/postgres');
+const pool = require('../lib/db');
 
 const router = express.Router();
 
@@ -14,7 +14,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing credentials' });
     }
 
-    const result = await sql`SELECT id, hashed_password FROM users WHERE username = ${username}`;
+    const result = await pool.query(
+      'SELECT id, hashed_password FROM users WHERE username = $1',
+      [username]
+    );
     const user = result.rows[0];
 
     if (!user) {

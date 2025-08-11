@@ -9,23 +9,16 @@ router.get('/', verifyToken, async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-    const result = await pool.query(
-      `SELECT c.* FROM cards c
+    const cardsResult = await pool.query(
+      `SELECT c.*, COALESCE(json_agg(row_to_json(cr)) FILTER (WHERE cr.id IS NOT NULL), '[]') AS rewards
+       FROM cards c
        JOIN user_cards uc ON c.id = uc.card_id
-       WHERE uc.user_id = $1`,
+       LEFT JOIN card_rewards cr ON c.id = cr.card_id
+       WHERE uc.user_id = $1
+       GROUP BY c.id`,
       [userId]
     );
-    const cards = result.rows;
-
-    const rewardsResult = await pool.query('SELECT * FROM card_rewards');
-    const rewards = rewardsResult.rows;
-
-    const cardsWithRewards = cards.map(card => ({
-      ...card,
-      rewards: rewards.filter(r => r.card_id === card.id)
-    }));
-
-    res.json({ cards: cardsWithRewards });
+    res.json({ cards: cardsResult.rows });
   } catch (error) {
     console.error('Error fetching user cards:', error);
     res.status(500).json({ error: 'Internal server error' });

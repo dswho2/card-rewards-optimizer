@@ -28,5 +28,5 @@ export interface Card {
   image_url: string;
   rewards: Reward[];
   annual_fee: number;
-  notes: string;
+  notes?: string;
 }

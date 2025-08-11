@@ -1,7 +1,7 @@
 // ===== backend/routes/signup.js =====
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const { sql } = require('@vercel/postgres');
+const pool = require('../lib/db');
 
 const router = express.Router();
 
@@ -13,13 +13,19 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing credentials' });
     }
 
-    const existingUser = await sql`SELECT id FROM users WHERE username = ${username}`;
+    const existingUser = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [username]
+    );
     if (existingUser.rowCount > 0) {
       return res.status(409).json({ success: false, message: 'Username already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await sql`INSERT INTO users (username, hashed_password) VALUES (${username}, ${hashedPassword})`;
+    await pool.query(
+      'INSERT INTO users (username, hashed_password) VALUES ($1, $2)',
+      [username, hashedPassword]
+    );
 
     return res.status(201).json({ success: true });
   } catch (err) {
