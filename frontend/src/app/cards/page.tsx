@@ -96,9 +96,9 @@ export default function CardsPage() {
   }
 
   const handleDelete = async (cardId: string) => {
+    removeCard(cardId);
     try {
       await removeUserCard(cardId);
-      removeCard(cardId);
       router.refresh();
     } catch (error) {
       console.error('Failed to delete card:', error);

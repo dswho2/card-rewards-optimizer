@@ -19,7 +19,11 @@ export default function CreditCardItem({ card, editMode, onDelete }: CardProps) 
                 <button
                 className="absolute top-1 left-1 text-red-600 hover:text-red-800"
                 aria-label="Delete card"
-                onClick={() => onDelete?.(card.id)}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete?.(card.id);
+                }}
                 >
                 <SquareX size={24} />
                 </button>
