@@ -18,16 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { Rewards } from '@/types';
-
-interface Card {
-  id: string;
-  name: string;
-  image_url: string;
-  rewards: Rewards;
-  annual_fee: number;
-  notes: string;
-}
+import type { Card } from '@/types';
 
 interface Props {
   cards: Card[];
@@ -43,6 +34,9 @@ const allCategories = [
   'Transit',
   'Utilities',
 ];
+
+const getRewardValue = (card: Card, category: string): number =>
+  card.rewards.find((r) => r.category === category)?.multiplier ?? 0;
 
 function DraggableRow({ id, children }: { id: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -143,8 +137,8 @@ export default function CoverageVisualizer({ cards }: Props) {
                   let bestReward = 0;
                   for (const card of cards) {
                     const reward = Math.max(
-                      card.rewards[category as keyof Rewards] ?? 0,
-                      card.rewards['All'] ?? 0
+                      getRewardValue(card, category),
+                      getRewardValue(card, 'All')
                     );
                     if (reward > bestReward) {
                       bestReward = reward;
@@ -204,16 +198,16 @@ export default function CoverageVisualizer({ cards }: Props) {
             <tbody>
               {sortedCategories.map((category, categoryIndex) => {
                 const rowRewards = sortedCards.map((card) => {
-                  const categoryReward = card.rewards[category as keyof Rewards];
-                  const allReward = card.rewards['All'];
-                  return Math.max(categoryReward ?? 0, allReward ?? 0);
+                  const categoryReward = getRewardValue(card, category);
+                  const allReward = getRewardValue(card, 'All');
+                  return Math.max(categoryReward, allReward);
                 });
                 const maxReward = Math.max(...rowRewards);
 
                 const bestInCard: number[] = sortedCards.map((card) => {
                   let best = 0;
                   for (const cat of allCategories) {
-                    const r = Math.max(card.rewards[cat as keyof Rewards] ?? 0, card.rewards['All'] ?? 0);
+                    const r = Math.max(getRewardValue(card, cat), getRewardValue(card, 'All'));
                     if (r > best) best = r;
                   }
                   return best;
@@ -229,9 +223,9 @@ export default function CoverageVisualizer({ cards }: Props) {
                       {category}
                     </td>
                     {sortedCards.map((card, colIndex) => {
-                      const categoryReward = card.rewards[category as keyof Rewards];
-                      const allReward = card.rewards['All'];
-                      const reward = Math.max(categoryReward ?? 0, allReward ?? 0);
+                      const categoryReward = getRewardValue(card, category);
+                      const allReward = getRewardValue(card, 'All');
+                      const reward = Math.max(categoryReward, allReward);
                       const intensity = reward ? Math.min(reward / 5, 1) : 0;
                       const bgColor = reward ? getHeatColor(intensity) : 'transparent';
 

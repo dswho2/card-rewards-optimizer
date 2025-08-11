@@ -8,6 +8,9 @@ import CreditCardItem from '@/components/CreditCardItem';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { Card, Category } from '@/types';
 
+const getRewardValue = (card: Card, category: string): number =>
+  card.rewards.find((r) => r.category === category)?.multiplier ?? 0;
+
 export default function Home() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,12 +44,12 @@ export default function Home() {
 
       let maxReward = 0;
       for (const card of cards) {
-        const reward = card.rewards[key] ?? card.rewards['All'] ?? 0;
+        const reward = Math.max(getRewardValue(card, key), getRewardValue(card, 'All'));
         if (reward > maxReward) maxReward = reward;
       }
 
       const matching = cards.filter((card) => {
-        const reward = card.rewards[key] ?? card.rewards['All'] ?? 0;
+        const reward = Math.max(getRewardValue(card, key), getRewardValue(card, 'All'));
         return reward === maxReward && reward > 0;
       });
 

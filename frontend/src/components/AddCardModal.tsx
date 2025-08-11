@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import CreditCardItem from './CreditCardItem';
 import { useCardsStore } from '@/store/useCardsStore';
-import { Rewards } from '@/types';
+import type { Reward } from '@/types';
 
 interface Card {
   id: string;
@@ -13,7 +13,7 @@ interface Card {
   network: string;
   annual_fee: number;
   image_url: string;
-  rewards: Rewards;
+  rewards: Reward[];
   notes: string;
 }
 
