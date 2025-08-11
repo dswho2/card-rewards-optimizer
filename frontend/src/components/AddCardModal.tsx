@@ -17,10 +17,8 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
   const [selectedCard, setSelectedCard] = useState<ApiCard | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { cards: userCards, setCards } = useCardsStore((state) => ({
-    cards: state.cards,
-    setCards: state.setCards,
-  }));
+  const userCards = useCardsStore((state) => state.cards);
+  const setCards = useCardsStore((state) => state.setCards);
 
   const [annualFee, setAnnualFee] = useState('');
   const [issuer, setIssuer] = useState('');
