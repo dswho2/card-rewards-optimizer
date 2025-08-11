@@ -82,26 +82,6 @@ export const getCardRec = async (description: string): Promise<string> => {
   return data.category;
 };
 
-export const addUserCard = async (cardId: string) => {
-  const token = localStorage.getItem('auth_token');
-
-  const res = await fetch(`${API_BASE_URL}/api/user-cards`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: JSON.stringify({ card_id: cardId }),
-  });
-
-  const data: { success: boolean; message?: string } = await res.json();
-  if (!res.ok || !data.success) {
-    throw new Error(data.message || 'Failed to add card');
-  }
-
-  return data;
-};
-
 export const searchCards = async (params: {
   search?: string;
   annual_fee?: string;

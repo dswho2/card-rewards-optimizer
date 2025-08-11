@@ -1,6 +1,7 @@
 // src/app/cards/page.tsx
 "use client";
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 
 import type { Card } from '@/types';
@@ -53,9 +54,11 @@ function SortableCard({ card, editMode, onDelete }: SortableCardProps) {
 }
 
 export default function CardsPage() {
+  const router = useRouter();
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const cards = useCardsStore((state) => state.cards);const removeCard = useCardsStore((state) => state.removeCard);
+  const cards = useCardsStore((state) => state.cards);
+  const removeCard = useCardsStore((state) => state.removeCard);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
   if (!isLoggedIn) {
@@ -96,6 +99,7 @@ export default function CardsPage() {
     try {
       await removeUserCard(cardId);
       removeCard(cardId);
+      router.refresh();
     } catch (error) {
       console.error('Failed to delete card:', error);
     }
