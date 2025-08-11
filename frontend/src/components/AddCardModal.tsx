@@ -4,9 +4,7 @@
 import { useEffect, useState } from 'react';
 import CreditCardItem from './CreditCardItem';
 import { useCardsStore } from '@/store/useCardsStore';
-import { saveUserCard } from '@/app/api/user';
-
-import { addUserCard, searchCards, type ApiCard } from '@/app/api/user';
+import { saveUserCard, searchCards, type ApiCard } from '@/app/api/user';
 
 export default function AddCardModal({ onClose }: { onClose: () => void }) {
   const [search, setSearch] = useState('');
