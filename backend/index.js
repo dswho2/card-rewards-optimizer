@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 module.exports = app;
 
 // Uncomment for local testing:
-// const PORT = process.env.PORT || 4000;
-// app.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}`);
-// });
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});

@@ -3,8 +3,8 @@
 
 import { useState } from 'react';
 import { loginOrSignup } from '../app/api/auth';
-import { loadUserCardsToStore } from '@/lib/loadUserCards';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useUser } from '@/contexts/UserContext';
 
 export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [username, setUsername] = useState('');
@@ -14,6 +14,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
 
   const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+  const { refetchCards } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +26,10 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
     if (response.success) {
       if (response.token) {
         localStorage.setItem('auth_token', response.token);
-        await loadUserCardsToStore();
         setLoggedIn(true);
+        // Note: UserContext will automatically fetch cards when auth state changes
+        // but we can trigger it explicitly to be sure
+        setTimeout(() => refetchCards(), 100);
       }
       onClose();
     } else {

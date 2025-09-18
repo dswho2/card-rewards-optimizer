@@ -51,13 +51,32 @@ router.delete('/:cardId', verifyToken, async (req, res) => {
   try {
     const userId = req.user?.id;
     const { cardId } = req.params;
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
 
-    await pool.query('DELETE FROM user_cards WHERE user_id = $1 AND card_id = $2', [userId, cardId]);
-    res.json({ success: true });
+    if (!cardId) {
+      return res.status(400).json({ success: false, error: 'Card ID is required' });
+    }
+
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(cardId)) {
+      return res.status(400).json({ success: false, error: 'Invalid card ID format' });
+    }
+
+    const result = await pool.query('DELETE FROM user_cards WHERE user_id = $1 AND card_id = $2', [userId, cardId]);
+    
+    // Check if any rows were actually deleted
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, error: 'Card not found in user collection' });
+    }
+
+    res.json({ success: true, message: 'Card successfully removed' });
   } catch (error) {
     console.error('Error deleting user card:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 

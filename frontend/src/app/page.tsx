@@ -1,59 +1,50 @@
 // src/app/page.tsx
 'use client';
 
-import { useState } from 'react';
-import { getCardRec } from '@/app/api/user';
-import { useCardsStore } from '@/store/useCardsStore';
-import CreditCardItem from '@/components/CreditCardItem';
-import { useAuthStore } from '@/store/useAuthStore';
-import type { Card, Category } from '@/types';
-
-const getRewardValue = (card: Card, category: string): number =>
-  card.rewards.find((r) => r.category === category)?.multiplier ?? 0;
+import { useState, useEffect } from 'react';
+import { getCardRecommendation } from '@/app/api/user';
+import { RecommendationResults } from '@/components/RecommendationResults';
+import { useAuthState } from '@/hooks/useAuthState';
+import { useUser } from '@/contexts/UserContext';
+import type { RecommendationResponse } from '@/types';
 
 export default function Home() {
   const [input, setInput] = useState('');
+  const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [category, setCategory] = useState<string | null>(null);
-  const [bestCards, setBestCards] = useState<Card[]>([]);
+  const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
+  const [currentMode, setCurrentMode] = useState<'purchase' | 'discovery'>('purchase');
 
-  const cards = useCardsStore((state) => state.cards);
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
+  const { isLoggedIn, userId, mounted } = useAuthState();
+  const { cards: userCards, loading: loadingCards } = useUser();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+
+
+  const handleSubmit = async (e: React.FormEvent, mode: 'purchase' | 'discovery' = 'purchase') => {
     e.preventDefault();
     setError(null);
-    setCategory(null);
-    setBestCards([]);
+    setRecommendations(null);
+    setCurrentMode(mode);
 
     if (!input.trim()) return;
 
-    if (!cards.length) {
-      setError('You need to add cards before getting a recommendation.');
+    // For purchase recommendations, check if user has cards
+    if (mode === 'purchase' && isLoggedIn && userCards.length === 0) {
+      setError('You need to add some credit cards first to get personalized purchase recommendations. Visit the "My Cards" page to add your cards, or use "Card Discovery" to find new cards for this purchase.');
       return;
     }
 
     setLoading(true);
 
     try {
-      const matchedCategory = await getCardRec(input);
-      setCategory(matchedCategory);
-
-      const key = matchedCategory as Category;
-
-      let maxReward = 0;
-      for (const card of cards) {
-        const reward = Math.max(getRewardValue(card, key), getRewardValue(card, 'All'));
-        if (reward > maxReward) maxReward = reward;
-      }
-
-      const matching = cards.filter((card) => {
-        const reward = Math.max(getRewardValue(card, key), getRewardValue(card, 'All'));
-        return reward === maxReward && reward > 0;
-      });
-
-      setBestCards(matching);
+      const results = await getCardRecommendation(
+        input.trim(),
+        amount ? parseFloat(amount) : undefined,
+        new Date().toISOString(),
+        mode === 'purchase' && userId ? userId : undefined // Only send userId for purchase mode
+      );
+      setRecommendations(results);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -65,69 +56,199 @@ export default function Home() {
     }
   };
 
-  if (!isLoggedIn) {
+  const handleNewSearch = () => {
+    setRecommendations(null);
+    setInput('');
+    setAmount('');
+    setError(null);
+  };
+
+  // Show loading during hydration to prevent mismatch
+  if (!mounted) {
     return (
-      <main className="p-6 max-w-3xl mx-auto text-center">
-        <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
-        <p className="text-gray-600 dark:text-gray-300">Log in to get personalized card recommendations.</p>
+      <main className="p-6 max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-4">Card Rewards Optimizer</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            Loading...
+          </p>
+        </div>
       </main>
     );
   }
 
-  if (!cards.length) {
+  // Show recommendations if we have them
+  if (recommendations) {
     return (
-      <main className="p-6 max-w-3xl mx-auto text-center">
-        <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
-        <p className="text-gray-600 dark:text-gray-300">You don&apos;t have any cards saved. Go to the My Cards page to add one.</p>
+      <main className="p-6 max-w-6xl mx-auto">
+        <RecommendationResults 
+          results={recommendations} 
+          onNewSearch={handleNewSearch}
+          mode={currentMode}
+        />
       </main>
     );
   }
 
   return (
-    <main className="p-6 max-w-3xl mx-auto text-center">
-      <h1 className="text-3xl font-bold mb-4">What&apos;s your purchase?</h1>
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="e.g. Booking a hotel in NYC"
-          className="w-full p-3 border rounded-md dark:bg-gray-800 dark:text-white"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          disabled={loading}
-        >
-          {loading ? 'Loading...' : 'Get Recommendation'}
-        </button>
-      </form>
-
-      {error && (
-        <div className="mt-4 p-3 text-red-700 bg-red-100 border border-red-300 rounded dark:bg-red-900 dark:text-red-100 dark:border-red-700">
-          {error}
-        </div>
-      )}
-
-      {category && (
-        <h2 className="mt-8 text-xl font-semibold">
-          Matched Category: <span className="text-blue-600">{category}</span>
-        </h2>
-      )}
-
-      {bestCards.length > 0 && (
-        <div className="mt-4 flex flex-col gap-4">
-          {bestCards.map((card) => (
-            <CreditCardItem key={card.id} card={card} editMode={false} />
-          ))}
-        </div>
-      )}
-
-      {category && bestCards.length === 0 && (
-        <p className="mt-4 text-gray-600 dark:text-gray-300">
-          No matching cards found for category: <strong>{category}</strong>
+    <main className="p-6 max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold mb-4">Card Rewards Optimizer</h1>
+        <p className="text-xl text-gray-600 dark:text-gray-300">
+          Find the best credit card for every purchase
         </p>
+      </div>
+
+      {!isLoggedIn ? (
+        <div className="text-center p-8 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <h2 className="text-2xl font-semibold mb-4">Welcome!</h2>
+          <p className="text-gray-600 dark:text-gray-300">
+            Log in to get personalized card recommendations powered by AI.
+          </p>
+        </div>
+      ) : (
+        <div className="max-w-2xl mx-auto">
+          <form onSubmit={(e) => { e.preventDefault(); }} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium mb-2">
+                  Purchase Description
+                </label>
+                <input
+                  id="description"
+                  type="text"
+                  placeholder="e.g. booking a hotel in NYC, buying groceries, gas station"
+                  className="w-full p-4 text-lg border rounded-lg dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="amount" className="block text-sm font-medium mb-2">
+                  Amount (optional)
+                </label>
+                <input
+                  id="amount"
+                  type="number"
+                  placeholder="$0.00"
+                  className="w-full p-3 border rounded-lg dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  min="0"
+                  step="0.01"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={(e) => handleSubmit(e, 'purchase')}
+                className="py-4 px-6 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={!input.trim() || loading}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Analyzing...
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-sm opacity-90 mb-1">Best from My Cards</div>
+                    <div>Purchase Recommendation</div>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => handleSubmit(e, 'discovery')}
+                className="py-4 px-6 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={!input.trim() || loading}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Analyzing...
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-sm opacity-90 mb-1">Find New Cards</div>
+                    <div>Card Discovery</div>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Mode explanation */}
+            <div className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+              <p><strong>Purchase Recommendation:</strong> Find the best card from your existing cards to maximize rewards for this purchase.</p>
+              <p><strong>Card Discovery:</strong> Discover new credit cards that would be optimal for this type of purchase.</p>
+            </div>
+          </form>
+
+          {error && (
+            <div className="mt-6 p-4 text-red-700 bg-red-100 border border-red-300 rounded-lg dark:bg-red-900 dark:text-red-100 dark:border-red-700">
+              <h3 className="font-semibold">Error</h3>
+              <p>{error}</p>
+            </div>
+          )}
+
+          {/* Quick suggestions */}
+          <div className="mt-8">
+            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">
+              Quick examples:
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {[
+                'booking a hotel in NYC',
+                'dinner at Italian restaurant', 
+                'groceries at Whole Foods',
+                'gas at Shell station',
+                'flight to Los Angeles',
+                'Netflix subscription'
+              ].map((suggestion, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setInput(suggestion)}
+                  className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  disabled={loading}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Feature highlights */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div className="p-4">
+              <div className="text-2xl mb-2">🤖</div>
+              <h3 className="font-semibold mb-1">AI-Powered</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Advanced semantic analysis with Pinecone and OpenAI
+              </p>
+            </div>
+            <div className="p-4">
+              <div className="text-2xl mb-2">⚡</div>
+              <h3 className="font-semibold mb-1">Smart Matching</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Analyzes spending caps, conditions, and optimal timing
+              </p>
+            </div>
+            <div className="p-4">
+              <div className="text-2xl mb-2">📊</div>
+              <h3 className="font-semibold mb-1">Detailed Insights</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                See confidence scores, alternatives, and reasoning
+              </p>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );

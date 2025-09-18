@@ -4,25 +4,29 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthState } from '@/hooks/useAuthState';
 import LoginModal from './LoginModal';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
-  const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+  const { isLoggedIn, mounted } = useAuthState();
+  const logout = useAuthStore((s) => s.logout);
   const authInit = useAuthStore((s) => s.initializeAuth);
 
   useEffect(() => {
-    setMounted(true);
-    authInit();
-  }, [authInit]);
+    // Only initialize auth when mounted (handled by useAuthState)
+    if (mounted) {
+      const timer = setTimeout(() => {
+        authInit();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [mounted, authInit]);
 
   const handleSignOut = () => {
-    localStorage.removeItem('auth_token');
-    setLoggedIn(false);
+    logout();
   };
 
   const handleLoginClose = () => {

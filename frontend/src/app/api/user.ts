@@ -2,10 +2,8 @@
 
 import type { Card } from '@/types';
 
-export interface ApiCard extends Card {
-  issuer: string;
-  network: string;
-}
+// ApiCard is now just an alias since Card includes all necessary fields
+export type ApiCard = Card;
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
@@ -30,41 +28,106 @@ export const saveUserCard = async (
 ): Promise<{ success: boolean; message?: string }> => {
   const token = localStorage.getItem('auth_token');
 
-  const res = await fetch(`${API_BASE_URL}/api/user-cards`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ card_id: cardId }),
-  });
-
-  const data: { success: boolean; message?: string } = await res.json();
-  if (!res.ok || !data.success) {
-    throw new Error(data.message || 'Failed to save card');
+  if (!token) {
+    throw new Error('You need to log in to save cards');
   }
 
-  return data;
+  if (!cardId) {
+    throw new Error('Card ID is required');
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/user-cards`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ card_id: cardId }),
+    });
+
+    const data: { success: boolean; message?: string } = await res.json();
+    
+    if (!res.ok) {
+      let errorMessage = 'Failed to save card';
+      if (res.status === 401) {
+        errorMessage = 'You need to log in again';
+      } else if (res.status === 400) {
+        errorMessage = data.message || 'Invalid request';
+      } else if (res.status === 409) {
+        errorMessage = 'Card is already in your collection';
+      }
+      throw new Error(errorMessage);
+    }
+
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to save card');
+    }
+
+    return data;
+  } catch (error) {
+    // Handle network errors
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+    throw error;
+  }
 };
 
-export const removeUserCard = async (cardId: string) => {
+export const removeUserCard = async (cardId: string): Promise<{ success: boolean; message?: string }> => {
   const token = localStorage.getItem('auth_token');
 
-  const res = await fetch(`${API_BASE_URL}/api/user-cards/${cardId}`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to delete card');
+  if (!token) {
+    throw new Error('You need to log in to delete cards');
   }
 
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/user-cards/${cardId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // Provide more specific error messages based on status code
+      let errorMessage = 'Failed to delete card';
+      if (res.status === 400) {
+        errorMessage = data.error || 'Invalid card ID';
+      } else if (res.status === 401) {
+        errorMessage = 'You need to log in again';
+      } else if (res.status === 404) {
+        errorMessage = 'Card not found in your collection';
+      } else if (res.status === 500) {
+        errorMessage = 'Server error - please try again';
+      }
+      
+      throw new Error(errorMessage);
+    }
+
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to delete card');
+    }
+
+    return data;
+  } catch (error) {
+    // Handle network errors
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+    throw error;
+  }
 };
 
-export const getCardRec = async (description: string): Promise<string> => {
+export const getCardRecommendation = async (
+  description: string, 
+  amount?: number, 
+  date?: string,
+  userId?: string
+): Promise<import('@/types').RecommendationResponse> => {
   const token = localStorage.getItem('auth_token');
 
   const res = await fetch(`${API_BASE_URL}/api/recommend-card`, {
@@ -73,13 +136,26 @@ export const getCardRec = async (description: string): Promise<string> => {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify({ description }),
+    body: JSON.stringify({ 
+      description, 
+      amount, 
+      date: date || new Date().toISOString(),
+      userId 
+    }),
   });
 
-  if (!res.ok) throw new Error('Failed to get recommendation');
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to get recommendation: ${errorText}`);
+  }
   
-  const { data }: { data: { category: string } } = await res.json();
-  return data.category;
+  return await res.json();
+};
+
+// Legacy function for backward compatibility
+export const getCardRec = async (description: string): Promise<string> => {
+  const recommendation = await getCardRecommendation(description);
+  return recommendation.category;
 };
 
 export const searchCards = async (params: {
