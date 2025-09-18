@@ -109,6 +109,24 @@ export default function CardsPage() {
     setCardToDelete(null);
   }, []);
 
+  const handleModalClose = useCallback(async () => {
+    setShowModal(false);
+    // Refresh cards list after modal closes (in case a card was added)
+    await refetchCards();
+  }, [refetchCards]);
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = cards.findIndex(c => c.id === active.id);
+      const newIndex = cards.findIndex(c => c.id === over?.id);
+      // For now, we'll just update locally. In a real app, you might want to save the order to the backend
+      const reorderedCards = arrayMove(cards, oldIndex, newIndex);
+      // Note: This would require adding an action to the context to handle reordering
+      console.log('Card reordered:', { oldIndex, newIndex });
+    }
+  }, [cards]);
+
   // ✅ CORRECT: Conditional rendering without early returns
   // Show loading state during hydration
   if (!mounted) {
@@ -154,23 +172,6 @@ export default function CardsPage() {
     );
   }
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (active.id !== over?.id) {
-      const oldIndex = cards.findIndex(c => c.id === active.id);
-      const newIndex = cards.findIndex(c => c.id === over?.id);
-      // For now, we'll just update locally. In a real app, you might want to save the order to the backend
-      const reorderedCards = arrayMove(cards, oldIndex, newIndex);
-      // Note: This would require adding an action to the context to handle reordering
-      console.log('Card reordered:', { oldIndex, newIndex });
-    }
-  }
-
-  const handleModalClose = async () => {
-    setShowModal(false);
-    // Refresh cards list after modal closes (in case a card was added)
-    await refetchCards();
-  };
 
   return (
     <main className="p-6 max-w-4xl mx-auto">
