@@ -9,12 +9,11 @@ import {
   TrendingUp, 
   AlertCircle, 
   CheckCircle,
-  DollarSign,
   Star,
   Clock,
   Zap
 } from 'lucide-react';
-import type { RecommendationResponse, CardRecommendation } from '@/types';
+import type { RecommendationResponse } from '@/types';
 
 interface RecommendationResultsProps {
   results: RecommendationResponse;
@@ -110,7 +109,7 @@ export function RecommendationResults({ results, onNewSearch, mode }: Recommenda
           
           <div className="mt-4 p-3 bg-muted rounded-lg">
             <p className="text-sm">
-              <strong>"{results.metadata.description}"</strong>
+              <strong>&quot;{results.metadata.description}&quot;</strong>
               {results.metadata.amount && (
                 <span className="text-green-600 font-medium"> • ${results.metadata.amount.toFixed(2)}</span>
               )}

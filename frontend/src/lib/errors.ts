@@ -15,7 +15,7 @@ export class APIError extends AppError {
   constructor(
     message: string,
     status: number,
-    public response?: any
+    public response?: unknown
   ) {
     super(message, 'API_ERROR', status);
     this.name = 'APIError';

@@ -1,7 +1,6 @@
 // src/app/cards/page.tsx
 "use client";
 import React, { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useUser } from '@/contexts/UserContext';
 
@@ -56,7 +55,6 @@ const SortableCard = React.memo(function SortableCard({ card, editMode, onDelete
 
 export default function CardsPage() {
   // ✅ CORRECT: All hooks called at the top level before any conditions
-  const router = useRouter();
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
