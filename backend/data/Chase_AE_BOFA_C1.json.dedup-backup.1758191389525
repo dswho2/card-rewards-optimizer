@@ -251,6 +251,16 @@
             },
             {
                 "category": "Travel",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2× miles on United purchases"
+            },
+            {
+                "category": "Travel",
                 "multiplier": 5,
                 "reward_type": "fixed",
                 "cap": null,
@@ -572,6 +582,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2% cash back on grocery"
+            },
+            {
+                "category": "Grocery",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": 8000,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -729,6 +749,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "3% cash back on grocery"
+            },
+            {
+                "category": "Grocery",
+                "multiplier": 3,
+                "reward_type": "fixed",
+                "cap": 6000,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "3% cash back on grocery"
             }
         ]
     },
@@ -778,6 +808,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2× on all other purchases"
+            },
+            {
+                "category": "Grocery",
+                "multiplier": 3,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "3% cash back on grocery"
             },
             {
                 "category": "Grocery",
@@ -847,6 +887,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2% cash back on grocery"
+            },
+            {
+                "category": "Grocery",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -896,6 +946,26 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
+            },
+            {
+                "category": "Grocery",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2% cash back on grocery"
+            },
+            {
+                "category": "Grocery",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2% cash back on grocery"
             },
             {
                 "category": "Grocery",
@@ -1004,6 +1074,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1% on all other purchases"
+            },
+            {
+                "category": "Streaming",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2% cash back on streaming"
             },
             {
                 "category": "Streaming",

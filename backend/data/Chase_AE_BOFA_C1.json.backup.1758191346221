@@ -247,7 +247,17 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on travel"
+                "notes": "2× miles on restaurants and hotel stays"
+            },
+            {
+                "category": "Travel",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2× miles on United purchases"
             },
             {
                 "category": "Travel",
@@ -258,16 +268,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "5× miles on hotel stays via United booking"
-            },
-            {
-                "category": "Dining",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on dining"
             }
         ]
     },
@@ -384,7 +384,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on travel"
+                "notes": "2× miles on other travel (car rentals, trains, hotels, rideshare, tolls, local transit)"
             },
             {
                 "category": "Dining",
@@ -405,16 +405,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× mile on all other purchases"
-            },
-            {
-                "category": "Transit",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on transit"
             }
         ]
     },
@@ -443,7 +433,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": "2025-12-31",
-                "notes": "2% cash back on gas"
+                "notes": "2× on gas & grocery (combined first $5,000/year)"
             },
             {
                 "category": "All",
@@ -454,16 +444,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": 5000,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": "2025-12-31",
-                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -541,7 +521,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on gas"
+                "notes": "2× on restaurants and grocery (first $8,000/year)"
             },
             {
                 "category": "Dining",
@@ -551,7 +531,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on dining"
+                "notes": "2× on restaurants and grocery (first $8,000/year)"
             },
             {
                 "category": "All",
@@ -562,16 +542,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": 8000,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -639,7 +609,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on dining"
+                "notes": "2× on restaurants, airline tickets directly, transit, fitness clubs"
             },
             {
                 "category": "All",
@@ -650,26 +620,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
-            },
-            {
-                "category": "Travel",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on travel"
-            },
-            {
-                "category": "Transit",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on transit"
             }
         ]
     },
@@ -698,7 +648,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "3% cash back on gas"
+                "notes": "3× on grocery, gas, dining (first $6,000/year)"
             },
             {
                 "category": "Dining",
@@ -708,7 +658,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "3% cash back on dining"
+                "notes": "3× on grocery, gas, dining (first $6,000/year)"
             },
             {
                 "category": "All",
@@ -719,16 +669,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2× on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 3,
-                "reward_type": "fixed",
-                "cap": 6000,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "3% cash back on grocery"
             }
         ]
     },
@@ -757,7 +697,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "3% cash back on gas"
+                "notes": "3× on grocery, gas, dining"
             },
             {
                 "category": "Dining",
@@ -767,7 +707,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "3% cash back on dining"
+                "notes": "3× on grocery, gas, dining"
             },
             {
                 "category": "All",
@@ -778,16 +718,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2× on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 3,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "3% cash back on grocery"
             }
         ]
     },
@@ -816,7 +746,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on gas"
+                "notes": "2× on grocery, gas, dining"
             },
             {
                 "category": "Dining",
@@ -826,7 +756,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on dining"
+                "notes": "2× on grocery, gas, dining"
             },
             {
                 "category": "All",
@@ -837,16 +767,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -865,7 +785,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on travel"
+                "notes": "2× points at Disney, gas, dining, and grocery"
             },
             {
                 "category": "Gas",
@@ -875,7 +795,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on gas"
+                "notes": "2× at Disney, gas, dining, grocery"
             },
             {
                 "category": "Dining",
@@ -885,7 +805,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on dining"
+                "notes": "2× at Disney, gas, dining, grocery"
             },
             {
                 "category": "All",
@@ -896,16 +816,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -983,7 +893,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on dining"
+                "notes": "2% at restaurants and streaming, gas"
             },
             {
                 "category": "Gas",
@@ -993,7 +903,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on gas"
+                "notes": "2% at gas stations and select streaming"
             },
             {
                 "category": "All",
@@ -1004,16 +914,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1% on all other purchases"
-            },
-            {
-                "category": "Streaming",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on streaming"
             }
         ]
     },
@@ -1052,7 +952,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "2% cash back on gas"
+                "notes": "2% on grocery stores purchases"
             },
             {
                 "category": "All",
@@ -1063,16 +963,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1% on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 2,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "2% cash back on grocery"
             }
         ]
     },
@@ -1159,7 +1049,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "6% cash back on entertainment"
+                "notes": "6% on select U.S. streaming subscriptions"
             },
             {
                 "category": "Gas",
@@ -1190,16 +1080,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1% on all other purchases"
-            },
-            {
-                "category": "Streaming",
-                "multiplier": 6,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "6% cash back on streaming"
             }
         ]
     },
@@ -1394,7 +1274,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "3% cash back on travel"
+                "notes": "3× points on travel and transit"
             },
             {
                 "category": "Dining",
@@ -1415,16 +1295,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1× on all other purchases"
-            },
-            {
-                "category": "Transit",
-                "multiplier": 3,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "3% cash back on transit"
             }
         ]
     },
@@ -1760,7 +1630,7 @@
                 "portal_only": false,
                 "start_date": null,
                 "end_date": null,
-                "notes": "3% cash back on dining"
+                "notes": "3% cash back at grocery stores, dining, entertainment, streaming services"
             },
             {
                 "category": "All",
@@ -1771,36 +1641,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1% cash back on all other purchases"
-            },
-            {
-                "category": "Grocery",
-                "multiplier": 3,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "3% cash back on grocery"
-            },
-            {
-                "category": "Entertainment",
-                "multiplier": 3,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "3% cash back on entertainment"
-            },
-            {
-                "category": "Streaming",
-                "multiplier": 3,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "3% cash back on streaming"
             }
         ]
     },

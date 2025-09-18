@@ -47,9 +47,15 @@ export default function CreditCardItem({ card, editMode, onDelete }: CardProps) 
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
             <strong>Rewards:</strong>{" "}
             {card.rewards && card.rewards.length > 0
-                ? card.rewards
-                    .map((reward) => `${reward.multiplier}x ${reward.category}`)
-                    .join(', ')
+                ? (() => {
+                    // Deduplicate rewards by category and multiplier
+                    const uniqueRewards = card.rewards.filter((reward, index, arr) => 
+                      arr.findIndex(r => r.category === reward.category && r.multiplier === reward.multiplier) === index
+                    );
+                    return uniqueRewards
+                      .map((reward) => `${reward.multiplier}x ${reward.category}`)
+                      .join(', ');
+                  })()
                 : 'No rewards'}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">

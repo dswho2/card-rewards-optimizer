@@ -1,5 +1,160 @@
 # Card Rewards Optimizer - Phase 1 Architecture & Implementation Plan
 
+## 🚨 CRITICAL FIX: Grocery vs Dining Category Confusion
+
+### Root Cause Analysis
+The categorization issue where "groceries" returns "dining" recommendations is caused by **conflicting category mappings** in the reward calculator:
+
+**Backend correctly categorizes:**
+- ✅ `CategoryService.categorize("groceries")` → `"Grocery"` (85%+ confidence)
+
+**RewardCalculator incorrectly maps categories:**
+- ❌ `isCategoryMatch("Grocery", "Dining")` → `true` (incorrect match)
+- ❌ Both "Grocery" and "Dining" map to "Food" in `categoryMappings`
+
+**Problematic Code Location:** `backend/services/rewardCalculator.js:146-153`
+```javascript
+const categoryMappings = {
+  'Dining': ['Dining', 'Restaurant', 'Food'],      // ❌ 'Food' causes conflict
+  'Grocery': ['Grocery', 'Supermarket', 'Food'],  // ❌ 'Food' causes conflict
+  // ...
+};
+```
+
+**Result:** When user asks for grocery card, dining cards incorrectly match because both categories include "Food".
+
+### Immediate Fix Plan
+
+#### Fix 1: Remove Conflicting Category Mappings
+**File:** `backend/services/rewardCalculator.js`
+**Lines:** 146-153
+**Change:** Remove shared "Food" mapping and make categories distinct
+
+```javascript
+// BEFORE (❌ Broken)
+const categoryMappings = {
+  'Dining': ['Dining', 'Restaurant', 'Food'],
+  'Grocery': ['Grocery', 'Supermarket', 'Food'],
+  // ...
+};
+
+// AFTER (✅ Fixed)
+const categoryMappings = {
+  'Dining': ['Dining', 'Restaurant'],
+  'Grocery': ['Grocery', 'Supermarket'],
+  'Gas': ['Gas', 'Fuel', 'Gasoline'],
+  'Entertainment': ['Entertainment', 'Streaming', 'Movies'],
+  'Travel': ['Travel', 'Transportation', 'Hotel'],
+  'Transit': ['Transit', 'Public Transport']
+};
+```
+
+#### Fix 2: Implement Strict Category Matching
+**Current Logic:** Loose substring matching allows cross-category contamination
+**New Logic:** Exact category matching with explicit synonyms only
+
+```javascript
+// BEFORE (❌ Allows false positives)
+return rewardCategories.some(rc => 
+  purchaseCategories.some(pc => 
+    rc.toLowerCase().includes(pc.toLowerCase()) ||
+    pc.toLowerCase().includes(rc.toLowerCase())
+  )
+);
+
+// AFTER (✅ Exact matching)
+isCategoryMatch(rewardCategory, purchaseCategory) {
+  // 1. Direct exact match
+  if (rewardCategory === purchaseCategory) {
+    return true;
+  }
+
+  // 2. Explicit synonym mapping (no overlaps)
+  const synonymMappings = {
+    'Grocery': ['Supermarket'],
+    'Dining': ['Restaurant'],
+    'Gas': ['Fuel', 'Gasoline'],
+    'Travel': ['Transportation', 'Hotel'],
+    'Entertainment': ['Streaming', 'Movies'],
+    'Transit': ['Public Transport']
+  };
+
+  const synonyms = synonymMappings[rewardCategory] || [];
+  return synonyms.includes(purchaseCategory);
+}
+```
+
+#### Fix 3: Enhanced Category Validation
+Add validation to prevent future category mapping conflicts:
+
+```javascript
+// Add to rewardCalculator.js constructor
+validateCategoryMappings() {
+  const allMappedValues = Object.values(this.categoryMappings).flat();
+  const duplicates = allMappedValues.filter((item, index) => 
+    allMappedValues.indexOf(item) !== index
+  );
+  
+  if (duplicates.length > 0) {
+    console.error('Category mapping conflicts detected:', duplicates);
+    throw new Error(`Conflicting category mappings: ${duplicates.join(', ')}`);
+  }
+}
+```
+
+### Testing Plan
+
+#### Test Cases to Verify Fix
+1. **Grocery Request Test:**
+   ```bash
+   POST /api/recommend-card
+   { "description": "weekly groceries at Whole Foods" }
+   # Expected: Top recommendations should be grocery-category cards
+   ```
+
+2. **Dining Request Test:**
+   ```bash
+   POST /api/recommend-card  
+   { "description": "dinner at restaurant" }
+   # Expected: Top recommendations should be dining-category cards
+   ```
+
+3. **Cross-Category Boundary Test:**
+   ```bash
+   POST /api/recommend-card
+   { "description": "buying food at grocery store" }
+   # Expected: Should categorize as "Grocery", not "Dining"
+   ```
+
+#### Implementation Steps
+
+1. **Immediate Fix (5 minutes):**
+   - Remove "Food" from both Dining and Grocery mappings
+   - Test with grocery/dining queries
+
+2. **Enhanced Fix (15 minutes):**
+   - Implement strict category matching
+   - Add category validation
+
+3. **Validation (10 minutes):**
+   - Run test cases
+   - Verify recommendations are category-appropriate
+
+### Prevention Strategy
+
+#### Code Review Checklist
+- [ ] No shared values across category mappings
+- [ ] Category matching logic is explicit, not substring-based  
+- [ ] Test both positive and negative category matches
+- [ ] Validate that similar categories don't cross-contaminate
+
+#### Monitoring
+- Log category matching decisions for debugging
+- Add alerts for unexpected category matches
+- Track recommendation accuracy metrics
+
+This fix will resolve the immediate grocery vs dining confusion and prevent similar category mapping issues in the future.
+
 ## Project Overview
 This is a full-stack credit card rewards optimizer that uses semantic embedding to suggest the best credit cards for maximizing cashback rewards. The application helps users understand which card to use for specific purchases and visualizes their coverage across spending categories.
 

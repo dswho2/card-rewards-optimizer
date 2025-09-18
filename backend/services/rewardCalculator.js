@@ -5,6 +5,9 @@ class RewardCalculator {
     // Cache for frequently accessed card data
     this.cardCache = new Map();
     this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
+    
+    // Validate category mappings on startup
+    this.validateCategoryMappings();
   }
 
   /**
@@ -134,33 +137,53 @@ class RewardCalculator {
   }
 
   /**
-   * Handle category matching with some flexibility
+   * Handle category matching with strict, non-overlapping synonyms
    */
   isCategoryMatch(rewardCategory, purchaseCategory) {
-    // Direct match
+    // 1. Direct exact match
     if (rewardCategory === purchaseCategory) {
       return true;
     }
 
-    // Some flexible matching for common cases
-    const categoryMappings = {
-      'Dining': ['Dining', 'Restaurant', 'Food'],
-      'Travel': ['Travel', 'Transportation', 'Hotel'],
-      'Grocery': ['Grocery', 'Supermarket', 'Food'],
-      'Gas': ['Gas', 'Fuel', 'Gasoline'],
-      'Entertainment': ['Entertainment', 'Streaming', 'Movies'],
-      'Transit': ['Transit', 'Transportation', 'Public Transport']
+    // 2. Explicit synonym mapping (no overlaps between categories)
+    const synonymMappings = {
+      'Grocery': ['Supermarket', 'Market', 'Food Store'],
+      'Dining': ['Restaurant', 'Cafe', 'Bar', 'Eatery'],
+      'Gas': ['Fuel', 'Gasoline', 'Petrol'],
+      'Travel': ['Hotel', 'Motel', 'Resort', 'Flight', 'Airline'],
+      'Entertainment': ['Streaming', 'Movies', 'Cinema', 'Theater', 'Concert'],
+      'Transit': ['Public Transport', 'Metro', 'Subway', 'Bus']
     };
 
-    const rewardCategories = categoryMappings[rewardCategory] || [rewardCategory];
-    const purchaseCategories = categoryMappings[purchaseCategory] || [purchaseCategory];
+    const synonyms = synonymMappings[rewardCategory] || [];
+    return synonyms.includes(purchaseCategory);
+  }
 
-    return rewardCategories.some(rc => 
-      purchaseCategories.some(pc => 
-        rc.toLowerCase().includes(pc.toLowerCase()) ||
-        pc.toLowerCase().includes(rc.toLowerCase())
-      )
+  /**
+   * Validate category mappings to prevent conflicts
+   */
+  validateCategoryMappings() {
+    const synonymMappings = {
+      'Grocery': ['Supermarket', 'Market', 'Food Store'],
+      'Dining': ['Restaurant', 'Cafe', 'Bar', 'Eatery'],
+      'Gas': ['Fuel', 'Gasoline', 'Petrol'],
+      'Travel': ['Hotel', 'Motel', 'Resort', 'Flight', 'Airline'],
+      'Entertainment': ['Streaming', 'Movies', 'Cinema', 'Theater', 'Concert'],
+      'Transit': ['Public Transport', 'Metro', 'Subway', 'Bus']
+    };
+
+    // Check for duplicate values across categories
+    const allMappedValues = Object.values(synonymMappings).flat();
+    const duplicates = allMappedValues.filter((item, index) => 
+      allMappedValues.indexOf(item) !== index
     );
+    
+    if (duplicates.length > 0) {
+      console.error('❌ Category mapping conflicts detected:', duplicates);
+      throw new Error(`Conflicting category mappings: ${duplicates.join(', ')}`);
+    }
+    
+    console.log('✅ Category mappings validated - no conflicts detected');
   }
 
   /**
