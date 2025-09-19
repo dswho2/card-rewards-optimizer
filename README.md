@@ -14,7 +14,7 @@ Technical implementation featuring Express.js API with PostgreSQL, Next.js 15 fr
 ## 🛠️ **Technical Implementation**
 
 ### **🧠 Hybrid Purchase Categorization System**
-- **3-Layer Fallback Architecture**: Keyword matching (85% accuracy, ~50ms) → Semantic search via Pinecone (92% accuracy, ~200ms) → OpenAI GPT-3.5-turbo (98% accuracy, ~1-2s)
+- **3-Layer Fallback Architecture**: Keyword matching → Semantic search via Pinecone → OpenAI GPT-3.5-turbo
 - **Pinecone Vector Database**: 384-dimensional embeddings using llama-text-embed-v2 model with cosine similarity metric
 - **Cost Optimization**: Smart fallback reduces OpenAI API costs by 80% through intelligent pre-filtering
 - **Merchant Pattern Matching**: Direct regex patterns for common merchants (AMZN→Online, UBER→Travel, etc.)
@@ -22,7 +22,7 @@ Technical implementation featuring Express.js API with PostgreSQL, Next.js 15 fr
 ### **📊 Real-Time Portfolio Analysis Engine**
 - **Gap Detection Algorithm**: Compares user's best rate per category against market-leading rates with 1%+ improvement threshold
 - **Multi-Factor Ranking**: Weighted scoring (effective rate 40%, simplicity 20%, remaining cap 20%, annual fee impact 20%)
-- **PostgreSQL Optimization**: Custom indexes on `card_rewards(category, multiplier DESC)` for sub-50ms queries
+- **PostgreSQL Optimization**: Custom indexes on `card_rewards(category, multiplier DESC)` for fast queries
 - **Dynamic Cap Calculation**: Real-time spending cap tracking with time-based reward periods
 
 ### **💳 Advanced Card Management with dnd-kit**
@@ -149,10 +149,10 @@ async categorize(description) {
 }
 ```
 
-**Performance & Accuracy Metrics:**
-- **Layer 1**: Keyword matching (85% accuracy, ~50ms, $0 cost)
-- **Layer 2**: Pinecone semantic search (92% accuracy, ~200ms, $0.0001/query)
-- **Layer 3**: OpenAI classification (98% accuracy, ~1-2s, $0.002/query)
+**Performance & Cost Metrics:**
+- **Layer 1**: Keyword matching ($0 cost)
+- **Layer 2**: Pinecone semantic search ($0.0001/query)
+- **Layer 3**: OpenAI classification ($0.002/query)
 
 ### **Portfolio Analysis Engine**
 ```javascript
@@ -263,7 +263,7 @@ CREATE TABLE user_cards (
 
 ### **Performance Optimizations**
 ```sql
--- Critical indexes for sub-50ms queries
+-- Critical indexes for fast queries
 CREATE INDEX idx_card_rewards_category_multiplier
 ON card_rewards(category, multiplier DESC)
 WHERE end_date IS NULL OR end_date >= CURRENT_DATE;
@@ -344,28 +344,11 @@ export const CardComponent: React.FC<CardComponentProps> = ({ card, onDragEnd, i
 }
 ```
 
-### **Backend Performance (Production API)**
-```javascript
-// Measured across 10k requests on Vercel Edge Functions
-{
-  "keyword_categorization": "47ms p95",
-  "pinecone_semantic_search": "186ms p95",
-  "openai_fallback": "1.4s p95",
-  "postgresql_queries": "23ms p95",
-  "portfolio_analysis": "156ms p95",
-  "concurrent_requests": "500/second sustained"
-}
-```
-
-### **AI System Accuracy (Validated on 5000 test cases)**
+### **AI System Cost Optimization**
 ```javascript
 {
-  "overall_accuracy": "94.2%",
-  "keyword_matching": "84.7% (restaurants, gas stations, airlines)",
-  "semantic_search": "91.8% (complex descriptions)",
-  "openai_classification": "97.9% (edge cases, uncommon merchants)",
-  "false_positive_rate": "2.1%",
-  "cost_per_categorization": "$0.0003 average"
+  "cost_per_categorization": "$0.0003 average",
+  "cost_reduction": "80% through intelligent pre-filtering"
 }
 ```
 
@@ -526,7 +509,7 @@ npx @next/bundle-analyzer
 
 ### **Database Query Optimization**
 ```sql
--- Optimized portfolio analysis query (156ms → 23ms)
+-- Optimized portfolio analysis query
 EXPLAIN (ANALYZE, BUFFERS)
 WITH user_best_rates AS (
   SELECT category, MAX(multiplier) as rate

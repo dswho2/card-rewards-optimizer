@@ -1,6 +1,6 @@
 # Card Rewards Optimizer - Backend
 
-Express.js 4.18 API server with PostgreSQL 15, implementing hybrid AI categorization (Pinecone 384-dim vectors + OpenAI GPT-3.5-turbo), real-time portfolio analysis, and JWT authentication with bcryptjs. Deployed on Vercel Edge Functions with 1GB memory allocation.
+Express.js 4.18 API server with PostgreSQL 15, implementing hybrid AI categorization (Pinecone 384-dim vectors + OpenAI GPT-3.5-turbo), real-time portfolio analysis, and JWT authentication with bcryptjs. Deployed on Vercel Edge Functions.
 
 ## 🏗️ **Architecture Overview**
 
@@ -10,7 +10,7 @@ Express.js 4.18 API server with PostgreSQL 15, implementing hybrid AI categoriza
 - **Authentication**: JWT HS256 + bcryptjs 2.4.3 (12 salt rounds, 24h expiration)
 - **Vector Search**: Pinecone serverless index (384 dimensions, cosine similarity, llama-text-embed-v2 model)
 - **AI Integration**: OpenAI API v4.24.0 (GPT-3.5-turbo, text-embedding-3-small)
-- **Deployment**: Vercel Edge Functions (@vercel/node 3.0.0, 1GB memory, 10s timeout)
+- **Deployment**: Vercel Edge Functions (@vercel/node 3.0.0)
 - **Validation**: express-validator 7.0.1 with custom sanitization rules
 
 ### **Microservice Architecture**
@@ -20,11 +20,10 @@ Express.js 4.18 API server with PostgreSQL 15, implementing hybrid AI categoriza
 │  CategoryService    │  │  PortfolioAnalyzer  │  │  RewardCalculator    │
 │                     │  │                     │  │                      │
 │ • keywordMatch()    │  │ • analyzeGaps()     │  │ • calcEffectiveRate()│
-│   ~47ms p95         │  │   ~156ms p95        │  │   ~12ms p95          │
 │ • semanticSearch()  │  │ • marketComparison()│  │ • capCalculation()   │
-│   ~186ms p95        │  │   ~23ms p95         │  │   with time periods  │
-│ • openaiClassify()  │  │ • priorityScore()   │  │ • multiFactor()      │
-│   ~1.4s p95         │  │   business rules    │  │   scoring algorithm  │
+│ • openaiClassify()  │  │ • priorityScore()   │  │   with time periods  │
+│                     │  │   business rules    │  │ • multiFactor()      │
+│                     │  │                     │  │   scoring algorithm  │
 │                     │  │                     │  │                      │
 │ 3-layer fallback    │  │ Real-time PostgreSQL│  │ Complex reward logic │
 │ Cost optimization   │  │ CTE queries         │  │ Portal restrictions  │
@@ -318,8 +317,7 @@ class PortfolioAnalyzer {
 
 ### **Optimized Market Rate Queries**
 ```sql
--- High-performance queries with composite indexes
--- Query execution time: ~23ms p95 with proper indexing
+-- High-performance queries with proper indexing
 
 -- Get market leading rates by category
 SELECT category, MAX(multiplier) as market_rate, COUNT(*) as card_count
@@ -464,40 +462,6 @@ router.post('/recommend-card', [
 });
 ```
 
-## 📊 **Production Performance Metrics**
-
-### **API Response Times (P95 over 30 days)**
-```javascript
-// Measured on Vercel Edge Functions with 1GB memory
-{
-  "keyword_categorization": "47ms",    // Layer 1 fallback
-  "pinecone_semantic_search": "186ms", // Layer 2 vector search
-  "openai_gpt_classification": "1.4s", // Layer 3 LLM fallback
-  "portfolio_gap_analysis": "156ms",   // PostgreSQL CTE queries
-  "database_connection": "12ms",       // Connection pool avg
-  "reward_calculation": "23ms",        // Complex business logic
-  "jwt_verification": "3ms",           // Token validation
-  "input_validation": "8ms"            // express-validator
-}
-```
-
-### **AI System Performance (Validated on 5000 samples)**
-```javascript
-{
-  "overall_accuracy": "94.2%",
-  "cost_per_request": "$0.0003",      // Avg with 3-layer fallback
-  "layer_distribution": {
-    "keyword_matching": "68.4%",       // 84.7% accuracy, $0 cost
-    "semantic_search": "23.8%",        // 91.8% accuracy, $0.0001
-    "openai_fallback": "7.8%"          // 97.9% accuracy, $0.002
-  },
-  "false_positive_rate": "2.1%",
-  "categories_supported": 8,
-  "merchant_patterns": 157,
-  "keyword_mappings": 412
-}
-```
-
 ## 🔄 **Deployment Architecture**
 
 ### **Vercel Serverless**
@@ -625,12 +589,12 @@ node -e "
 
 ### **High-Performance Database Design**
 - **PostgreSQL CTEs** for complex portfolio analysis in single queries
-- **Composite indexes** on `(category, multiplier DESC)` for sub-50ms lookups
+- **Composite indexes** on `(category, multiplier DESC)` for fast lookups
 - **Connection pooling** with 20 max connections and 30s idle timeout
 - **Parameterized queries** preventing SQL injection with proper escaping
 
 ### **Production-Ready Architecture**
-- **Vercel Edge Functions** with 1GB memory and 10s timeout limits
+- **Vercel Edge Functions** with optimized memory allocation
 - **JWT HS256** authentication with 12-round bcryptjs password hashing
 - **express-validator** middleware with comprehensive input sanitization
 - **CORS whitelisting** for production domain security
