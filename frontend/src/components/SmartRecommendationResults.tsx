@@ -1,9 +1,65 @@
 'use client';
 
 import CreditCardItem from './CreditCardItem';
+import type { Reward } from '@/types';
+
+interface Gap {
+  category: string;
+  userCurrentRate: number;
+  marketBestRate: number;
+  improvementPotential: number;
+  priority: 'high' | 'medium' | 'low';
+  recommendations: CardRecommendation[];
+}
+
+
+interface CardRecommendation {
+  cardId: string;
+  cardName: string;
+  issuer: string;
+  annualFee: number;
+  improvement: string;
+  currentRate: number;
+  newRate: number;
+  category: string;
+  imageUrl?: string;
+  rewards?: Reward[];
+}
+
+interface UserCard {
+  cardId: string;
+  cardName: string;
+  issuer: string;
+  annualFee: number;
+  rate: number;
+}
+
+interface Analysis {
+  userBestRate: number;
+  marketBestRate: number;
+  hasGoodCoverage: boolean;
+}
+
+interface Summary {
+  totalGaps: number;
+  highPriorityGaps: number;
+  totalImprovementPotential: number;
+}
+
+interface SmartRecommendationResults {
+  mode: 'auto' | 'category';
+  category?: string;
+  userCurrentCards?: UserCard[];
+  marketLeaders?: CardRecommendation[];
+  gaps?: Gap[];
+  summary?: Summary;
+  analysis?: Analysis;
+  recommendations?: CardRecommendation[];
+  analyzedAt: string;
+}
 
 interface SmartRecommendationResultsProps {
-  results: any;
+  results: SmartRecommendationResults;
   onNewAnalysis: () => void;
 }
 
@@ -77,7 +133,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
         )}
 
         {/* Category Gaps */}
-        {gaps.length === 0 ? (
+        {!gaps || gaps.length === 0 ? (
           <div className="text-center py-8 bg-green-50 dark:bg-green-900/20 rounded-lg border">
             <h3 className="text-lg font-medium text-green-800 dark:text-green-200 mb-2">🎉 Excellent Portfolio!</h3>
             <p className="text-green-700 dark:text-green-300 mb-2">
@@ -89,7 +145,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
           </div>
         ) : (
           <div className="space-y-6">
-            {gaps.map((gap: any, gapIndex: number) => (
+            {gaps.map((gap: Gap) => (
               <div key={gap.category} className="bg-white dark:bg-gray-800 rounded-lg border shadow-sm overflow-hidden">
                 {/* Category Header */}
                 <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b">
@@ -120,7 +176,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
                 <div className="p-6">
                   <h4 className="font-medium mb-4">Recommended Cards for {gap.category}</h4>
                   <div className="space-y-4">
-                    {gap.recommendations.map((card: any, cardIndex: number) => (
+                    {gap.recommendations.map((card: CardRecommendation, cardIndex: number) => (
                       <CreditCardItem
                         key={`${gap.category}-${card.cardId}-${cardIndex}`}
                         card={{
@@ -203,16 +259,16 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
 
         {/* User's Current Cards */}
         <div>
-          <h5 className="font-medium mb-3">Your Current {category} Cards</h5>
-          {userCurrentCards.length === 0 ? (
+          <h5 className="font-medium mb-3">Your Current {category || 'Category'} Cards</h5>
+          {!userCurrentCards || userCurrentCards.length === 0 ? (
             <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-dashed">
               <p className="text-gray-600 dark:text-gray-400 text-center">
-                You don't have any cards with specific {category.toLowerCase()} rewards
+                You don&apos;t have any cards with specific {(category || 'category').toLowerCase()} rewards
               </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {userCurrentCards.map((card: any, index: number) => (
+              {userCurrentCards.map((card: UserCard, index: number) => (
                 <CreditCardItem
                   key={card.cardId}
                   card={{
@@ -241,15 +297,15 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
         {/* Market Leaders */}
         <div>
           <h5 className="font-medium mb-3">Market Leaders</h5>
-          {marketLeaders.length === 0 ? (
+          {!marketLeaders || marketLeaders.length === 0 ? (
             <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border">
               <p className="text-green-700 dark:text-green-300 text-center">
-                No better cards found - you already have excellent {category.toLowerCase()} coverage!
+                No better cards found - you already have excellent {(category || 'category').toLowerCase()} coverage!
               </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {marketLeaders.map((card: any, index: number) => (
+              {marketLeaders.map((card: CardRecommendation, index: number) => (
                 <CreditCardItem
                   key={card.cardId}
                   card={{
@@ -292,7 +348,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h4 className="font-semibold">
-            {isPortfolioMode ? 'Portfolio Gap Analysis' : `Best ${results.category} Cards`}
+            {isPortfolioMode ? 'Portfolio Gap Analysis' : `Best ${results.category || 'Category'} Cards`}
           </h4>
           <button
             onClick={onNewAnalysis}
@@ -319,10 +375,10 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
           <>
             <div className="text-sm text-green-700 dark:text-green-300 mb-4">
               Found {recommendations.length} recommendation{recommendations.length !== 1 ? 's' : ''}
-              {isPortfolioMode ? ' to fill portfolio gaps' : ` for ${results.category}`}
+              {isPortfolioMode ? ' to fill portfolio gaps' : ` for ${results.category || 'category'}`}
             </div>
 
-            {recommendations.map((card: any, index: number) => (
+            {recommendations.map((card: CardRecommendation, index: number) => (
               <CreditCardItem
                 key={card.cardId}
                 card={{
