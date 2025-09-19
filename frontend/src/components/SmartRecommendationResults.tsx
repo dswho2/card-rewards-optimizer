@@ -46,7 +46,7 @@ interface Summary {
   totalImprovementPotential: number;
 }
 
-interface SmartRecommendationResults {
+export interface SmartRecommendationResults {
   mode: 'auto' | 'category';
   category?: string;
   userCurrentCards?: UserCard[];

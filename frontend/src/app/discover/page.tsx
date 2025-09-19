@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useAuthState } from '@/hooks/useAuthState';
-import { SmartRecommendationResults } from '@/components/SmartRecommendationResults';
+import { SmartRecommendationResults, type SmartRecommendationResults as SmartRecommendationResultsType } from '@/components/SmartRecommendationResults';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
@@ -14,7 +14,7 @@ export default function DiscoverPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [discoveryLoading, setDiscoveryLoading] = useState(false);
   const [discoveryError, setDiscoveryError] = useState<string | null>(null);
-  const [discoveryResults, setDiscoveryResults] = useState<any>(null);
+  const [discoveryResults, setDiscoveryResults] = useState<SmartRecommendationResultsType | null>(null);
 
   // Card search state
   const [searchFilters, setSearchFilters] = useState({
