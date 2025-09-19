@@ -1,4 +1,4 @@
-// index.js
+// index.js - Updated for complete deployment fix
 require('dotenv').config();
 
 const express = require('express');
