@@ -25,7 +25,16 @@ export default function DiscoverPage() {
     reward_category: '',
     min_multiplier: ''
   });
-  const [searchResults, setSearchResults] = useState<any>(null);
+  const [searchResults, setSearchResults] = useState<{
+    cards?: Array<{
+      id: string;
+      name: string;
+      issuer: string;
+      annual_fee: number;
+      network: string;
+      rewards?: Array<{ category: string; multiplier: number }>;
+    }>;
+  } | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
 
   const { isLoggedIn, mounted } = useAuthState();
@@ -229,7 +238,7 @@ export default function DiscoverPage() {
                 <h3 className="font-medium mb-2">Portfolio Gap Analysis</h3>
                 <p className="text-sm text-green-700 dark:text-green-300 mb-4">
                   Analyze your current cards to find categories where you could earn significantly more rewards.
-                  We'll identify gaps where market-leading cards offer 1%+ better rates than your current portfolio.
+                  We&apos;ll identify gaps where market-leading cards offer 1%+ better rates than your current portfolio.
                 </p>
               </div>
 
@@ -461,7 +470,7 @@ export default function DiscoverPage() {
                 Search Results ({searchResults.cards?.length || 0} cards found)
               </h3>
 
-              {searchResults.cards?.length === 0 ? (
+              {!searchResults.cards || searchResults.cards.length === 0 ? (
                 <div className="text-center py-8 bg-white dark:bg-gray-800 rounded-lg border">
                   <p className="text-gray-600 dark:text-gray-400">
                     No cards found matching your criteria. Try adjusting your filters.
@@ -469,7 +478,7 @@ export default function DiscoverPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {searchResults.cards?.map((card: any) => (
+                  {searchResults.cards.map((card) => (
                     <div key={card.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg border shadow-sm">
                       <div className="mb-3">
                         <h4 className="font-semibold text-lg">{card.name}</h4>
@@ -493,7 +502,7 @@ export default function DiscoverPage() {
                         <div className="mt-3 pt-3 border-t">
                           <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Top Rewards:</p>
                           <div className="space-y-1">
-                            {card.rewards.slice(0, 3).map((reward: any, index: number) => (
+                            {card.rewards.slice(0, 3).map((reward, index: number) => (
                               <div key={index} className="text-xs flex justify-between">
                                 <span>{reward.category}</span>
                                 <span className="font-medium">{reward.multiplier}x</span>
