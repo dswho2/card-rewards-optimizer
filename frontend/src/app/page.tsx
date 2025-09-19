@@ -1,38 +1,48 @@
 // src/app/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { getCardRecommendation } from '@/app/api/user';
 import { RecommendationResults } from '@/components/RecommendationResults';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useUser } from '@/contexts/UserContext';
+import { useSearch } from '@/contexts/SearchContext';
 import type { RecommendationResponse } from '@/types';
 
 export default function Home() {
-  const [input, setInput] = useState('');
-  const [amount, setAmount] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
-  const [currentMode, setCurrentMode] = useState<'purchase' | 'discovery'>('purchase');
-  const [reanalyzingMethod, setReanalyzingMethod] = useState<string | null>(null);
-
   const { isLoggedIn, userId, mounted } = useAuthState();
   const { cards: userCards, loading: loadingCards } = useUser();
+  const {
+    input,
+    setInput,
+    amount,
+    setAmount,
+    loading,
+    setLoading,
+    error,
+    setError,
+    recommendations,
+    setRecommendations,
+    currentMode,
+    setCurrentMode,
+    reanalyzingMethod,
+    setReanalyzingMethod,
+    handleNewSearch,
+  } = useSearch();
 
 
 
-  const handleSubmit = async (e: React.FormEvent, mode: 'purchase' | 'discovery' = 'purchase') => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setRecommendations(null);
-    setCurrentMode(mode);
+    setCurrentMode('purchase');
 
     if (!input.trim()) return;
 
     // For purchase recommendations, check if user has cards
-    if (mode === 'purchase' && isLoggedIn && userCards.length === 0) {
-      setError('You need to add some credit cards first to get personalized purchase recommendations. Visit the "My Cards" page to add your cards, or use "Card Discovery" to find new cards for this purchase.');
+    if (isLoggedIn && userCards.length === 0) {
+      setError('You need to add some credit cards first to get personalized purchase recommendations. Visit the "My Cards" page to add your cards.');
       return;
     }
 
@@ -43,7 +53,7 @@ export default function Home() {
         input.trim(),
         amount ? parseFloat(amount) : undefined,
         new Date().toISOString(),
-        mode === 'purchase' && userId ? userId : undefined
+        userId ? userId : undefined
         // No detectionMethod specified = use cache and auto-detect method
       );
       setRecommendations(results);
@@ -56,13 +66,6 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleNewSearch = () => {
-    setRecommendations(null);
-    setInput('');
-    setAmount('');
-    setError(null);
   };
 
   const handleReanalyze = async (method: string) => {
@@ -150,7 +153,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="max-w-2xl mx-auto">
-          <form onSubmit={(e) => { e.preventDefault(); }} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
                 <label htmlFor="description" className="block text-sm font-medium mb-2">
@@ -185,50 +188,27 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={(e) => handleSubmit(e, 'purchase')}
-                className="py-4 px-6 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={!input.trim() || loading}
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Analyzing...
-                  </div>
-                ) : (
-                  <>
-                    <div className="text-sm opacity-90 mb-1">Best from My Cards</div>
-                    <div>Purchase Recommendation</div>
-                  </>
-                )}
-              </button>
+            <button
+              type="submit"
+              className="w-full py-4 px-6 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={!input.trim() || loading}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Analyzing...
+                </div>
+              ) : (
+                <>
+                  <div className="text-sm opacity-90 mb-1">Best from My Cards</div>
+                  <div>Get Purchase Recommendation</div>
+                </>
+              )}
+            </button>
 
-              <button
-                type="button"
-                onClick={(e) => handleSubmit(e, 'discovery')}
-                className="py-4 px-6 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={!input.trim() || loading}
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Analyzing...
-                  </div>
-                ) : (
-                  <>
-                    <div className="text-sm opacity-90 mb-1">Find New Cards</div>
-                    <div>Card Discovery</div>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Mode explanation */}
-            <div className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+            {/* Feature explanation */}
+            <div className="text-sm text-gray-600 dark:text-gray-300">
               <p><strong>Purchase Recommendation:</strong> Find the best card from your existing cards to maximize rewards for this purchase.</p>
-              <p><strong>Card Discovery:</strong> Discover new credit cards that would be optimal for this type of purchase.</p>
             </div>
           </form>
 

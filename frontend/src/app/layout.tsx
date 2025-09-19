@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { UserProvider } from '@/contexts/UserContext';
+import { SearchProvider } from '@/contexts/SearchContext';
 import Navbar from '@/components/navbar';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,8 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <UserProvider>
-            <Navbar />
-            <main>{children}</main>
+            <SearchProvider>
+              <Navbar />
+              <main>{children}</main>
+            </SearchProvider>
           </UserProvider>
         </ThemeProvider>
       </body>

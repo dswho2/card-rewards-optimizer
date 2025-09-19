@@ -6,13 +6,56 @@ import type { Card } from '@/types';
 
 interface CardProps {
   card: Card;
-  editMode: boolean;
+  editMode?: boolean;
   onDelete?: (id: string) => void;
+  rightContent?: React.ReactNode;
+  reasoning?: string;
+  issuer?: string;
+  className?: string;
 }
 
-export default function CreditCardItem({ card, editMode, onDelete }: CardProps) {
+export default function CreditCardItem({
+  card,
+  editMode = false,
+  onDelete,
+  rightContent,
+  reasoning,
+  issuer,
+  className = ""
+}: CardProps) {
+  const formatRewards = (rewards: any[]) => {
+    if (!rewards || rewards.length === 0) return 'No rewards';
+
+    // Deduplicate rewards by category and multiplier
+    const uniqueRewards = rewards.filter((reward, index, arr) =>
+      arr.findIndex(r => r.category === reward.category && r.multiplier === reward.multiplier) === index
+    );
+
+    // Sort by multiplier from highest to lowest
+    return uniqueRewards
+      .sort((a, b) => b.multiplier - a.multiplier)
+      .map((reward) => `${reward.multiplier}x ${reward.category}`)
+      .join(', ');
+  };
+
+  const formatConditions = (rewards: any[]): string | null => {
+    if (!rewards || rewards.length === 0) return null;
+
+    const conditions: string[] = [];
+    rewards.forEach(reward => {
+      if (reward.portal_only) {
+        conditions.push('Portal booking required');
+      }
+      if (reward.cap) {
+        conditions.push(`$${reward.cap} annual spending cap`);
+      }
+    });
+
+    return conditions.length > 0 ? conditions.join(', ') : null;
+  };
+
   return (
-    <div className="relative flex flex-col md:flex-row gap-4 p-4 border rounded shadow dark:bg-gray-800">
+    <div className={`relative flex flex-col md:flex-row gap-4 p-4 border rounded shadow dark:bg-gray-800 ${className}`}>
         {editMode && (
             <>
                 {/* Delete circle (top left) */}
@@ -36,35 +79,53 @@ export default function CreditCardItem({ card, editMode, onDelete }: CardProps) 
                 <GripVertical size={18} />
                 </div>
             </>
-            )}
+        )}
+
         <img
             src={card.image_url}
             alt={card.name}
             className="w-full md:w-48 h-auto object-contain border rounded"
         />
+
         <div className="flex-1">
             <h3 className="text-xl font-semibold mb-1">{card.name}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-            <strong>Rewards:</strong>{" "}
-            {card.rewards && card.rewards.length > 0
-                ? (() => {
-                    // Deduplicate rewards by category and multiplier
-                    const uniqueRewards = card.rewards.filter((reward, index, arr) => 
-                      arr.findIndex(r => r.category === reward.category && r.multiplier === reward.multiplier) === index
-                    );
-                    return uniqueRewards
-                      .map((reward) => `${reward.multiplier}x ${reward.category}`)
-                      .join(', ');
-                  })()
-                : 'No rewards'}
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              {issuer || card.issuer}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-            <strong>Annual Fee:</strong> {card.annual_fee}
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-            <strong>Notes:</strong> {card.notes}
-            </p>
+
+            {reasoning ? (
+              <div className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+                {reasoning.split('\n').map((line: string, index: number) => (
+                  <div key={index} className="mb-1">{line}</div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                  <strong>Rewards:</strong> {formatRewards(card.rewards)}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                  <strong>Annual Fee:</strong> ${card.annual_fee}
+                </p>
+                {formatConditions(card.rewards) && (
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                    <strong>Conditions:</strong> {formatConditions(card.rewards)}
+                  </p>
+                )}
+                {card.notes && (
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Notes:</strong> {card.notes}
+                  </p>
+                )}
+              </>
+            )}
         </div>
+
+        {rightContent && (
+          <div className="text-right ml-4">
+            {rightContent}
+          </div>
+        )}
     </div>
   );
 }

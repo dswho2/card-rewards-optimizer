@@ -1,6 +1,8 @@
 // backend/routes/cards.js
 const express = require('express');
 const pool = require('../lib/db');
+const PortfolioAnalyzer = require('../services/portfolioAnalyzer');
+const verifyToken = require('../middleware/verifyToken');
 
 const router = express.Router();
 
@@ -54,6 +56,54 @@ router.get('/', async (req, res) => {
   const cards = cardsResult.rows;
 
   res.json({ cards });
+});
+
+// Portfolio analysis endpoint
+router.post('/analyze-portfolio', verifyToken, async (req, res) => {
+  try {
+    const { mode, category } = req.body;
+    const userId = req.user.id;
+
+    if (!mode || (mode !== 'auto' && mode !== 'category')) {
+      return res.status(400).json({ error: 'Invalid mode. Must be "auto" or "category"' });
+    }
+
+    if (mode === 'category' && !category) {
+      return res.status(400).json({ error: 'Category is required when mode is "category"' });
+    }
+
+    const analyzer = new PortfolioAnalyzer();
+    const result = await analyzer.analyzePortfolio(userId, mode, category);
+
+    // Format response based on mode
+    if (mode === 'category' && result.userCurrentCards !== undefined) {
+      // New category format
+      res.json({
+        success: true,
+        mode,
+        category: result.category,
+        userCurrentCards: result.userCurrentCards,
+        marketLeaders: result.marketLeaders,
+        analysis: result.analysis,
+        analyzedAt: new Date().toISOString()
+      });
+    } else {
+      // Portfolio mode - structured gap analysis
+      res.json({
+        success: true,
+        mode,
+        gaps: result.gaps || [],
+        summary: result.summary || {},
+        analyzedAt: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('Portfolio analysis error:', error);
+    res.status(500).json({
+      error: 'Analysis failed',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
 });
 
 module.exports = router;

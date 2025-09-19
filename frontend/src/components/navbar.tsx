@@ -3,13 +3,18 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAuthState } from '@/hooks/useAuthState';
+import { useSearch } from '@/contexts/SearchContext';
 import LoginModal from './LoginModal';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [showLogin, setShowLogin] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { handleNewSearch } = useSearch();
 
   const { isLoggedIn, mounted } = useAuthState();
   const logout = useAuthStore((s) => s.logout);
@@ -33,6 +38,18 @@ export default function Navbar() {
     setShowLogin(false);
   };
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (pathname === '/') {
+      // If already on home page, just reset search state
+      handleNewSearch();
+    } else {
+      // Navigate to home page and reset state
+      handleNewSearch();
+      router.push('/');
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -41,7 +58,8 @@ export default function Navbar() {
 
       <nav className="flex justify-between items-center p-4 border-b dark:border-gray-700">
         <div className="flex gap-4 items-center">
-          <Link href="/" className="text-xl font-semibold">CardRewards</Link>
+          <Link href="/" className="text-xl font-semibold" onClick={handleHomeClick}>CardRewards</Link>
+          <Link href="/discover" className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300">Discover</Link>
           <Link href="/cards" className="text-sm text-blue-600 dark:text-blue-400">My Cards</Link>
           <Link href="/visualize" className="text-sm text-blue-600 dark:text-blue-400">Visualize</Link>
         </div>

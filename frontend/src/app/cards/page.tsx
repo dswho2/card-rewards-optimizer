@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useUser } from '@/contexts/UserContext';
 
-import type { Card } from '@/types';
+import type { Card, RecommendationResponse } from '@/types';
 import CreditCardItem from '@/components/CreditCardItem';
 import AddCardModal from '@/components/AddCardModal';
 import ConfirmationModal from '@/components/ConfirmationModal';
@@ -60,6 +60,8 @@ export default function CardsPage() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [cardToDelete, setCardToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+
   const { isLoggedIn, mounted } = useAuthState();
   const { cards, loading, refetchCards, removeCard: removeCardFromContext } = useUser();
 
@@ -174,9 +176,20 @@ export default function CardsPage() {
 
 
   return (
-    <main className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-6">Your Cards</h2>
+    <main className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold">Your Cards</h2>
+        <div className="flex gap-3">
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            onClick={() => setShowModal(true)}
+          >
+            Add New Card
+          </button>
+        </div>
+      </div>
 
+      {/* Cards Section */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
           <div className="flex flex-col gap-6">
@@ -194,23 +207,17 @@ export default function CardsPage() {
         >
           {editMode ? 'Cancel' : 'Edit Cards'}
         </button>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={() => setShowModal(true)}
-        >
-          Add New Card
-        </button>
       </div>
 
       {showModal && <AddCardModal onClose={handleModalClose} />}
-      
+
       <ConfirmationModal
         isOpen={showConfirmModal}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         title="Remove Card"
         message={
-          cardToDelete 
+          cardToDelete
             ? `Are you sure you want to remove "${cards.find(c => c.id === cardToDelete)?.name || 'this card'}" from your collection? This action cannot be undone.`
             : 'Are you sure you want to remove this card from your collection? This action cannot be undone.'
         }
