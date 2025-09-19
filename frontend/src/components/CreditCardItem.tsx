@@ -2,7 +2,7 @@
 'use client';
 
 import { SquareX, GripVertical } from 'lucide-react';
-import type { Card } from '@/types';
+import type { Card, Reward } from '@/types';
 
 interface CardProps {
   card: Card;
@@ -23,7 +23,7 @@ export default function CreditCardItem({
   issuer,
   className = ""
 }: CardProps) {
-  const formatRewards = (rewards: any[]) => {
+  const formatRewards = (rewards: Reward[]) => {
     if (!rewards || rewards.length === 0) return 'No rewards';
 
     // Deduplicate rewards by category and multiplier
@@ -38,7 +38,7 @@ export default function CreditCardItem({
       .join(', ');
   };
 
-  const formatConditions = (rewards: any[]): string | null => {
+  const formatConditions = (rewards: Reward[]): string | null => {
     if (!rewards || rewards.length === 0) return null;
 
     const conditions: string[] = [];
