@@ -57,7 +57,7 @@ export default function DiscoverPage() {
         currentView === 'category' ? 'category' : 'auto',
         currentView === 'category' ? selectedCategory : undefined
       );
-      setDiscoveryResults(results);
+      setDiscoveryResults(results as SmartRecommendationResultsType);
     } catch (err) {
       if (err instanceof Error) {
         setDiscoveryError(err.message);

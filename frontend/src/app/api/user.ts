@@ -187,7 +187,17 @@ export const searchCards = async (params: {
 export const analyzePortfolio = async (
   mode: 'auto' | 'category',
   category?: string
-): Promise<any> => {
+): Promise<{
+  mode: 'auto' | 'category';
+  category?: string;
+  gaps?: unknown[];
+  userCurrentCards?: unknown[];
+  marketLeaders?: unknown[];
+  analysis?: unknown;
+  recommendations?: unknown[];
+  summary?: unknown;
+  analyzedAt: string;
+}> => {
   const token = localStorage.getItem('auth_token');
 
   if (!token) {

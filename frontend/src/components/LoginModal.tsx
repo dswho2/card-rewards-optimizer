@@ -14,6 +14,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
 
   const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+  const setUser = useAuthStore((s) => s.setUser);
   const { refetchCards } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,10 +27,21 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
     if (response.success) {
       if (response.token) {
         localStorage.setItem('auth_token', response.token);
-        setLoggedIn(true);
-        // Note: UserContext will automatically fetch cards when auth state changes
-        // but we can trigger it explicitly to be sure
-        setTimeout(() => refetchCards(), 100);
+
+        // Decode token to get userId
+        try {
+          const payload = response.token.split('.')[1];
+          const decoded = JSON.parse(atob(payload));
+          setUser(decoded.id);
+          setLoggedIn(true);
+
+          // UserContext will automatically fetch cards when auth state changes
+          // No need for setTimeout - it will happen automatically
+        } catch (error) {
+          console.error('Failed to decode token:', error);
+          setLoggedIn(true);
+          setUser(null);
+        }
       }
       onClose();
     } else {

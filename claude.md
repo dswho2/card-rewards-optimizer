@@ -1,5 +1,30 @@
 # Card Rewards Optimizer - Phase 1 Architecture & Implementation Plan
 
+## 🚨 CRITICAL CODE QUALITY RULES - NEVER VIOLATE
+
+### 🔴 **NEVER USE `any` TYPES**
+- ❌ **FORBIDDEN**: `Promise<any>`, `useState<any>`, `(param: any)`, etc.
+- ✅ **REQUIRED**: Always use proper TypeScript interfaces
+- 🚨 **BREAKS PRODUCTION**: `any` types cause Vercel build failures
+- 💡 **Use instead**: `unknown`, proper interfaces, or type assertions
+
+**Examples:**
+```typescript
+// ❌ NEVER DO THIS
+const [data, setData] = useState<any>(null);
+function process(item: any) { }
+
+// ✅ ALWAYS DO THIS
+const [data, setData] = useState<UserData | null>(null);
+function process(item: UserCard) { }
+// OR if truly unknown:
+const [data, setData] = useState<unknown>(null);
+```
+
+### 🔴 **ESCAPE JSX APOSTROPHES**
+- ❌ **FORBIDDEN**: `don't`, `won't`, `can't` in JSX
+- ✅ **REQUIRED**: `don&apos;t`, `won&apos;t`, `can&apos;t`
+
 ## ✅ RECENT UI IMPROVEMENTS - Simple Feature Updates
 
 ### Feature Updates Completed
