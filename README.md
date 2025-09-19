@@ -329,29 +329,6 @@ export const CardComponent: React.FC<CardComponentProps> = ({ card, onDragEnd, i
 };
 ```
 
-## 🚀 **Performance Metrics & Production Stats**
-
-### **Frontend Performance (Core Web Vitals)**
-```javascript
-// Measured with Lighthouse CI on Vercel deployment
-{
-  "FCP": "1.2s",        // First Contentful Paint
-  "LCP": "1.8s",        // Largest Contentful Paint
-  "CLS": "0.05",        // Cumulative Layout Shift
-  "TTI": "2.1s",        // Time to Interactive
-  "Bundle Size": "187KB gzipped", // Next.js optimized
-  "Tree Shaking": "94% unused code eliminated"
-}
-```
-
-### **AI System Cost Optimization**
-```javascript
-{
-  "cost_per_categorization": "$0.0003 average",
-  "cost_reduction": "80% through intelligent pre-filtering"
-}
-```
-
 ## 🔐 **Security Implementation Details**
 
 ### **JWT Authentication System**
