@@ -1,28 +1,47 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  CreditCard, 
-  TrendingUp, 
-  AlertCircle, 
+import {
+  CreditCard,
+  TrendingUp,
+  AlertCircle,
   CheckCircle,
   Star,
   Clock,
-  Zap
+  Zap,
+  ChevronDown
 } from 'lucide-react';
 import type { RecommendationResponse } from '@/types';
 
 interface RecommendationResultsProps {
   results: RecommendationResponse;
   onNewSearch: () => void;
+  onReanalyze?: (method: string) => void;
   mode?: 'purchase' | 'discovery';
+  loading?: boolean;
+  reanalyzingMethod?: string;
 }
 
-export function RecommendationResults({ results, onNewSearch, mode }: RecommendationResultsProps) {
+export function RecommendationResults({ results, onNewSearch, onReanalyze, mode, loading, reanalyzingMethod }: RecommendationResultsProps) {
   const topRecommendation = results.recommendations[0];
+  const [showDetectionDropdown, setShowDetectionDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDetectionDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.8) return 'bg-green-500';
@@ -36,26 +55,112 @@ export function RecommendationResults({ results, onNewSearch, mode }: Recommenda
     return 'Low';
   };
 
-  const getSourceBadge = (source: string) => {
-    const sourceConfig = {
-      'keyword': { label: 'Keyword Match', variant: 'secondary' as const, icon: <Zap className="h-3 w-3" /> },
-      'pinecone_semantic': { label: 'AI Semantic', variant: 'default' as const, icon: <Star className="h-3 w-3" /> },
-      'openai': { label: 'OpenAI', variant: 'outline' as const, icon: <CheckCircle className="h-3 w-3" /> },
-      'cache': { label: 'Cached', variant: 'secondary' as const, icon: <Clock className="h-3 w-3" /> }
+  const getSourceConfig = (source: string) => {
+    // Map all possible backend sources to our 3 standard methods
+    const sourceMapping = {
+      // Keyword matching variations
+      'keyword': 'keyword',
+      'cache': 'keyword',
+      'merchant': 'keyword',
+      'exact_match': 'keyword',
+
+      // Semantic search variations
+      'pinecone_semantic': 'semantic',
+      'semantic': 'semantic',
+      'vector': 'semantic',
+
+      // LLM prompting variations
+      'openai': 'llm',
+      'llm': 'llm',
+      'gpt': 'llm'
     };
-    
-    const config = sourceConfig[source as keyof typeof sourceConfig] || { label: source, variant: 'outline' as const, icon: null };
-    
-    return (
-      <Badge variant={config.variant} className="flex items-center gap-1">
-        {config.icon}
-        {config.label}
-      </Badge>
-    );
+
+    const standardMethods = {
+      'keyword': { label: 'Keyword Matching', variant: 'secondary' as const, icon: <Zap className="h-3 w-3" /> },
+      'semantic': { label: 'Semantic Search', variant: 'secondary' as const, icon: <Star className="h-3 w-3" /> },
+      'llm': { label: 'LLM Prompting', variant: 'secondary' as const, icon: <CheckCircle className="h-3 w-3" /> }
+    };
+
+    const mappedSource = sourceMapping[source as keyof typeof sourceMapping] || 'keyword';
+    return standardMethods[mappedSource as keyof typeof standardMethods];
+  };
+
+  const detectionMethods = [
+    { value: 'keyword', label: 'Keyword Matching', icon: <Zap className="h-3 w-3" /> },
+    { value: 'semantic', label: 'Semantic Search', icon: <Star className="h-3 w-3" /> },
+    { value: 'llm', label: 'LLM Prompting', icon: <CheckCircle className="h-3 w-3" /> }
+  ];
+
+  const getCurrentMethod = (source: string): string | null => {
+    try {
+      const sourceMapping = {
+        'keyword': 'keyword',
+        'cache': 'keyword',
+        'merchant': 'keyword',
+        'exact_match': 'keyword',
+        'pinecone_semantic': 'semantic',
+        'semantic': 'semantic',
+        'vector': 'semantic',
+        'openai': 'llm',
+        'llm': 'llm',
+        'gpt': 'llm'
+      };
+
+      if (!source || typeof source !== 'string') {
+        console.warn('Invalid source provided to getCurrentMethod:', source);
+        return null;
+      }
+
+      return sourceMapping[source as keyof typeof sourceMapping] || null;
+    } catch (error) {
+      console.warn('Failed to determine current method:', error);
+      return null; // Allow all methods on error
+    }
+  };
+
+  const handleReanalyze = (method: string) => {
+    if (onReanalyze) {
+      onReanalyze(method);
+    } else {
+      // Fallback: if no onReanalyze provided, we could show a message or handle differently
+      console.log('Reanalyze requested with method:', method);
+    }
+    setShowDetectionDropdown(false);
+  };
+
+  const currentMethod = getCurrentMethod(results.source);
+
+  const getMethodDisplayName = (method: string): string => {
+    const methodNames = {
+      'keyword': 'Keyword Matching',
+      'semantic': 'Semantic Search',
+      'llm': 'LLM Prompting'
+    };
+    return methodNames[method as keyof typeof methodNames] || method;
+  };
+
+  const hasValidAmount = () => {
+    const amount = results.metadata.amount;
+    return amount != null &&
+           amount !== 0 &&
+           Number(amount) > 0;
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {loading && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+          <div className="flex items-center gap-3 bg-background p-4 rounded-lg shadow-lg border border-border">
+            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span className="text-foreground">
+              {reanalyzingMethod
+                ? `Reanalyzing with ${getMethodDisplayName(reanalyzingMethod)}...`
+                : 'Reanalyzing with different method...'
+              }
+            </span>
+          </div>
+        </div>
+      )}
       {/* Analysis Header */}
       <Card>
         <CardHeader className="pb-3">
@@ -97,8 +202,41 @@ export function RecommendationResults({ results, onNewSearch, mode }: Recommenda
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Detection Method</p>
-              <div className="mt-1">
-                {getSourceBadge(results.source)}
+              <div className="relative mt-1" ref={dropdownRef}>
+                <div
+                  onClick={() => setShowDetectionDropdown(!showDetectionDropdown)}
+                  className="inline-block cursor-pointer"
+                >
+                  <Badge variant={getSourceConfig(results.source).variant} className="flex items-center gap-1 hover:opacity-80">
+                    {getSourceConfig(results.source).icon}
+                    {getSourceConfig(results.source).label}
+                    <ChevronDown className="h-3 w-3" />
+                  </Badge>
+                </div>
+
+                {showDetectionDropdown && (
+                  <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50 min-w-[150px]">
+                    {detectionMethods.map((method) => {
+                      const isCurrentMethod = currentMethod ? method.value === currentMethod : false;
+
+                      return (
+                        <button
+                          key={method.value}
+                          onClick={() => !isCurrentMethod && handleReanalyze(method.value)}
+                          disabled={isCurrentMethod}
+                          className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors first:rounded-t-md last:rounded-b-md ${
+                            isCurrentMethod
+                              ? 'cursor-not-allowed opacity-50 text-muted-foreground bg-muted'
+                              : 'hover:bg-muted cursor-pointer text-foreground'
+                          }`}
+                        >
+                          {method.icon}
+                          <span>{method.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
             <div>
@@ -110,9 +248,9 @@ export function RecommendationResults({ results, onNewSearch, mode }: Recommenda
           <div className="mt-4 p-3 bg-muted rounded-lg">
             <p className="text-sm">
               <strong>&quot;{results.metadata.description}&quot;</strong>
-              {results.metadata.amount && (
-                <span className="text-green-600 font-medium"> • ${results.metadata.amount.toFixed(2)}</span>
-              )}
+              {hasValidAmount() ? (
+                <span className="text-green-600 font-medium"> • ${Number(results.metadata.amount).toFixed(2)}</span>
+              ) : null}
             </p>
             {results.reasoning && (
               <p className="text-xs text-muted-foreground mt-1">
@@ -143,33 +281,31 @@ export function RecommendationResults({ results, onNewSearch, mode }: Recommenda
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Reward Rate:</span>
-                    <span className="font-bold text-lg text-primary">
+                    <span className="font-bold text-lg text-green-600">
                       {topRecommendation.effectiveRate}%
                     </span>
                   </div>
                   
-                  {results.metadata.amount && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Reward Value:</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Reward Value:</span>
+                    {hasValidAmount() ? (
                       <span className="font-bold text-lg text-green-600">
                         ${topRecommendation.rewardValue}
                       </span>
-                    </div>
-                  )}
+                    ) : (
+                      <span className="font-bold text-lg text-muted-foreground">
+                        N/A
+                      </span>
+                    )}
+                  </div>
                   
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Annual Fee:</span>
-                    <span className={`font-semibold ${topRecommendation.annualFee === 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className={`font-semibold ${topRecommendation.annualFee === 0 ? 'text-green-600' : 'text-white'}`}>
                       ${topRecommendation.annualFee}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Simplicity Score:</span>
-                    <span className="font-semibold">
-                      {topRecommendation.simplicity}/100
-                    </span>
-                  </div>
                 </div>
               </div>
 
@@ -256,8 +392,10 @@ export function RecommendationResults({ results, onNewSearch, mode }: Recommenda
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-lg">{card.effectiveRate}%</p>
-                    {results.metadata.amount && (
+                    {hasValidAmount() ? (
                       <p className="text-sm text-green-600 font-medium">${card.rewardValue}</p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground font-medium">N/A</p>
                     )}
                     <p className="text-xs text-muted-foreground">
                       ${card.annualFee} annual fee

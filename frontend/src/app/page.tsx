@@ -15,6 +15,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
   const [currentMode, setCurrentMode] = useState<'purchase' | 'discovery'>('purchase');
+  const [reanalyzingMethod, setReanalyzingMethod] = useState<string | null>(null);
 
   const { isLoggedIn, userId, mounted } = useAuthState();
   const { cards: userCards, loading: loadingCards } = useUser();
@@ -42,7 +43,8 @@ export default function Home() {
         input.trim(),
         amount ? parseFloat(amount) : undefined,
         new Date().toISOString(),
-        mode === 'purchase' && userId ? userId : undefined // Only send userId for purchase mode
+        mode === 'purchase' && userId ? userId : undefined
+        // No detectionMethod specified = use cache and auto-detect method
       );
       setRecommendations(results);
     } catch (err) {
@@ -63,6 +65,43 @@ export default function Home() {
     setError(null);
   };
 
+  const handleReanalyze = async (method: string) => {
+    if (!recommendations) return;
+
+    setLoading(true);
+    setError(null);
+    setReanalyzingMethod(method);
+
+    try {
+      // Map the method names to backend expected values
+      const methodMap: { [key: string]: string } = {
+        'keyword': 'keyword',
+        'semantic': 'semantic',
+        'llm': 'openai'
+      };
+
+      // Re-run the same search but with the specified detection method
+      // Cache automatically bypassed since detectionMethod is specified
+      const results = await getCardRecommendation(
+        recommendations.metadata.description,
+        recommendations.metadata.amount || undefined,
+        new Date().toISOString(),
+        currentMode === 'purchase' && userId ? userId : undefined,
+        methodMap[method] || method // Specifying method = auto bypass cache
+      );
+      setRecommendations(results);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Something went wrong while reanalyzing');
+      }
+    } finally {
+      setLoading(false);
+      setReanalyzingMethod(null);
+    }
+  };
+
   // Show loading during hydration to prevent mismatch
   if (!mounted) {
     return (
@@ -81,10 +120,13 @@ export default function Home() {
   if (recommendations) {
     return (
       <main className="p-6 max-w-6xl mx-auto">
-        <RecommendationResults 
-          results={recommendations} 
+        <RecommendationResults
+          results={recommendations}
           onNewSearch={handleNewSearch}
+          onReanalyze={handleReanalyze}
           mode={currentMode}
+          loading={loading}
+          reanalyzingMethod={reanalyzingMethod}
         />
       </main>
     );

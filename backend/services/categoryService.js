@@ -23,22 +23,30 @@ class CategoryService {
 
   /**
    * Main categorization method - tries multiple approaches
+   * @param {string} description - The purchase description to categorize
+   * @param {string} detectionMethod - Optional specific method to use ('keyword', 'semantic', 'openai')
    */
-  async categorize(description) {
+  async categorize(description, detectionMethod = null) {
     const startTime = Date.now();
-    console.log(`[CATEGORIZATION] Starting categorization for: "${description}"`);
-    
+    console.log(`[CATEGORIZATION] Starting categorization for: "${description}"${detectionMethod ? ` with method: ${detectionMethod}` : ''}`);
+
     if (!description || typeof description !== 'string') {
       console.log(`[CATEGORIZATION] Invalid input: ${typeof description}`);
       return { category: 'Other', confidence: 0.1, source: 'invalid' };
     }
 
-    // Check cache first
+    // Skip cache if specific detection method is requested
     const cacheKey = description.toLowerCase().trim();
-    if (this.cache.has(cacheKey)) {
+    if (!detectionMethod && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       console.log(`[CATEGORIZATION] Cache hit: ${cached.category} (${cached.confidence}) - Duration: ${Date.now() - startTime}ms`);
       return { ...cached, source: 'cache' };
+    }
+
+    // If specific detection method is requested, use only that method
+    if (detectionMethod) {
+      console.log(`[CATEGORIZATION] Using specific detection method: ${detectionMethod}`);
+      return await this.categorizeWithSpecificMethod(description, detectionMethod, startTime);
     }
 
     let result;
@@ -137,32 +145,93 @@ class CategoryService {
   }
 
   /**
-   * Enhanced keyword matching with merchant patterns and weighted scoring
+   * Categorize using a specific detection method (bypasses cache and normal flow)
+   */
+  async categorizeWithSpecificMethod(description, detectionMethod, startTime) {
+    let result;
+
+    switch (detectionMethod) {
+      case 'keyword':
+        console.log(`[CATEGORIZATION] Using keyword matching only`);
+        result = this.enhancedKeywordMatch(description);
+        break;
+
+      case 'semantic':
+        console.log(`[CATEGORIZATION] Using semantic search only`);
+        if (this.useSemanticEmbeddings) {
+          try {
+            result = await this.semanticService.categorizeWithPinecone(description);
+          } catch (error) {
+            console.error('[CATEGORIZATION] Semantic search failed:', error.message);
+            result = { category: 'Other', confidence: 0.1, source: 'semantic_error', reasoning: 'Semantic search failed' };
+          }
+        } else {
+          console.log(`[CATEGORIZATION] Semantic embeddings not available`);
+          result = { category: 'Other', confidence: 0.1, source: 'semantic_unavailable', reasoning: 'Semantic search not available' };
+        }
+        break;
+
+      case 'openai':
+        console.log(`[CATEGORIZATION] Using OpenAI only`);
+        if (process.env.OPENAI_API_KEY) {
+          try {
+            const openAIService = require('./openaiService');
+            result = await openAIService.categorizeDescription(description);
+          } catch (error) {
+            console.error('[CATEGORIZATION] OpenAI categorization failed:', error.message);
+            result = { category: 'Other', confidence: 0.1, source: 'openai_error', reasoning: 'OpenAI categorization failed' };
+          }
+        } else {
+          console.log(`[CATEGORIZATION] OpenAI API key not available`);
+          result = { category: 'Other', confidence: 0.1, source: 'openai_unavailable', reasoning: 'OpenAI API key not available' };
+        }
+        break;
+
+      default:
+        console.log(`[CATEGORIZATION] Unknown detection method: ${detectionMethod}, falling back to keyword`);
+        result = this.enhancedKeywordMatch(description);
+        break;
+    }
+
+    console.log(`[CATEGORIZATION] Specific method result: ${result.category} (${result.confidence}) from ${result.source} - Duration: ${Date.now() - startTime}ms`);
+
+    // Don't cache specific method results since they bypass normal flow
+    return result;
+  }
+
+  /**
+   * Enhanced keyword matching with contextual analysis and weighted scoring
    */
   enhancedKeywordMatch(description) {
     const cleanDesc = description.toLowerCase().trim();
-    
-    // 1. Check merchant patterns first (highest priority)
-    // But be careful with ambiguous patterns like "subway"
+
+    // 1. Collect all merchant and keyword matches with contextual scoring
+    const allMatches = {};
+
+    // Check merchant patterns - but don't return immediately, score them
     for (const [pattern, category] of Object.entries(MERCHANT_PATTERNS)) {
       const lowerPattern = pattern.toLowerCase();
-      
+
       if (cleanDesc.includes(lowerPattern)) {
         // Special handling for ambiguous terms
         if (lowerPattern === 'subway') {
           // If it mentions fare, it's transit; otherwise it's the restaurant
-          if (cleanDesc.includes('fare') || cleanDesc.includes('card') || 
+          if (cleanDesc.includes('fare') || cleanDesc.includes('card') ||
               cleanDesc.includes('metro') || cleanDesc.includes('transit')) {
             continue; // Skip this merchant match, let keyword matching handle it
           }
         }
-        
-        return { 
-          category, 
-          confidence: 0.95, 
-          source: 'merchant',
-          reasoning: `Matched merchant pattern: ${pattern}`
-        };
+
+        // Add merchant match to scoring instead of returning immediately
+        if (!allMatches[category]) {
+          allMatches[category] = { score: 0, matches: [], sources: [] };
+        }
+
+        // Merchant patterns get high base score but consider context
+        const contextScore = this.calculateContextScore(cleanDesc, lowerPattern, category);
+        allMatches[category].score += 3.0 * contextScore; // High base score but modulated by context
+        allMatches[category].matches.push(pattern);
+        allMatches[category].sources.push('merchant');
       }
     }
 
@@ -171,88 +240,185 @@ class CategoryService {
     const matchedKeywords = {};
 
     for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-      let score = 0;
-      let matches = [];
-      
-      for (const keyword of keywords) {
-        if (cleanDesc.includes(keyword.toLowerCase())) {
-          // Weight longer keywords higher (more specific)
-          const weight = Math.max(1, keyword.length / 5);
-          score += weight;
-          matches.push(keyword);
-        }
+      if (!allMatches[category]) {
+        allMatches[category] = { score: 0, matches: [], sources: [] };
       }
-      
-      if (score > 0) {
-        categoryScores[category] = score;
-        matchedKeywords[category] = matches;
+
+      for (const keyword of keywords) {
+        const keywordLower = keyword.toLowerCase();
+
+        // Use word boundary matching to prevent partial matches like "bus" in "business"
+        // Create regex with word boundaries for single words, or exact phrase match for multi-word keywords
+        const isMultiWord = keywordLower.includes(' ');
+        let isMatch = false;
+
+        if (isMultiWord) {
+          // For multi-word phrases, use exact substring match
+          isMatch = cleanDesc.includes(keywordLower);
+        } else {
+          // For single words, use word boundary regex to prevent partial matches
+          const wordBoundaryRegex = new RegExp(`\\b${keywordLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+          isMatch = wordBoundaryRegex.test(cleanDesc);
+        }
+
+        if (isMatch) {
+          // Calculate contextual score for this keyword
+          const contextScore = this.calculateContextScore(cleanDesc, keywordLower, category);
+          // Weight longer keywords higher (more specific) and apply context
+          const weight = Math.max(1, keyword.length / 5) * contextScore;
+          allMatches[category].score += weight;
+          allMatches[category].matches.push(keyword);
+          allMatches[category].sources.push('keyword');
+        }
       }
     }
 
     // 3. Handle no matches
-    if (Object.keys(categoryScores).length === 0) {
-      return { 
-        category: 'Other', 
-        confidence: 0.1, 
+    if (Object.keys(allMatches).length === 0) {
+      return {
+        category: 'Other',
+        confidence: 0.1,
         source: 'fallback',
         reasoning: 'No keyword matches found'
       };
     }
 
-    // 4. Find best category considering priority
+    // 4. Find best category considering priority and contextual scores
     let bestCategory = null;
     let highestScore = 0;
 
-    for (const [category, score] of Object.entries(categoryScores)) {
-      // Apply category priority as a tiebreaker
-      const priorityBonus = (CATEGORY_PRIORITY[category] || 0) * 0.1;
-      const adjustedScore = score + priorityBonus;
-      
-      if (adjustedScore > highestScore) {
-        highestScore = adjustedScore;
-        bestCategory = category;
+    for (const [category, data] of Object.entries(allMatches)) {
+      if (data.score > 0) {
+        // Apply category priority as a tiebreaker
+        const priorityBonus = (CATEGORY_PRIORITY[category] || 0) * 0.05; // Reduced impact
+        const adjustedScore = data.score + priorityBonus;
+
+        if (adjustedScore > highestScore) {
+          highestScore = adjustedScore;
+          bestCategory = category;
+        }
       }
     }
 
-    // 5. Calculate confidence based on score and specificity
-    const maxPossibleScore = Math.max(...Object.values(categoryScores));
-    const relativeScore = categoryScores[bestCategory] / maxPossibleScore;
-    const bestMatches = matchedKeywords[bestCategory];
-    
-    // Base confidence factors
-    let confidence = 0.4; // Base confidence for any keyword match
-    
-    // Factor 1: Relative score strength (0.1 to 0.4 boost)
-    confidence += relativeScore * 0.4;
-    
-    // Factor 2: Number of matching keywords (more matches = higher confidence)
-    const matchCountBoost = Math.min(bestMatches.length * 0.15, 0.3);
-    confidence += matchCountBoost;
-    
-    // Factor 3: Specificity of matches (longer keywords = more specific)
-    const avgKeywordLength = bestMatches.reduce((sum, kw) => sum + kw.length, 0) / bestMatches.length;
-    const specificityBoost = Math.min((avgKeywordLength - 5) * 0.02, 0.2);
-    confidence += Math.max(specificityBoost, 0);
-    
-    // Factor 4: Competition penalty (many categories matched = less confidence)
-    const competitionPenalty = Math.max((Object.keys(categoryScores).length - 1) * 0.05, 0);
-    confidence -= competitionPenalty;
-    
-    // Factor 5: High-confidence keyword phrases
-    const highConfidenceKeywords = ['gas station', 'grocery store', 'restaurant', 'hotel booking', 'flight'];
-    if (bestMatches.some(kw => highConfidenceKeywords.includes(kw))) {
-      confidence += 0.2;
+    // Check if no category had positive score
+    if (!bestCategory) {
+      return {
+        category: 'Other',
+        confidence: 0.1,
+        source: 'fallback',
+        reasoning: 'No sufficiently confident matches found'
+      };
     }
-    
+
+    // 5. Calculate confidence based on contextual score and competition
+    const bestData = allMatches[bestCategory];
+    const maxPossibleScore = Math.max(...Object.values(allMatches).map(d => d.score));
+    const relativeScore = bestData.score / maxPossibleScore;
+
+    // Base confidence factors
+    let confidence = 0.3; // Lower base confidence to require more evidence
+
+    // Factor 1: Relative score strength
+    confidence += relativeScore * 0.5;
+
+    // Factor 2: Multiple evidence sources boost confidence
+    const uniqueSources = [...new Set(bestData.sources)];
+    if (uniqueSources.includes('merchant')) confidence += 0.2;
+    if (bestData.matches.length > 1) confidence += 0.1;
+
+    // Factor 3: Competition penalty (many categories matched = less confidence)
+    const competingCategories = Object.keys(allMatches).filter(cat => allMatches[cat].score > 0).length;
+    const competitionPenalty = Math.max((competingCategories - 1) * 0.08, 0);
+    confidence -= competitionPenalty;
+
+    // Factor 4: Strong contextual indicators
+    const hasMerchantMatch = bestData.sources.includes('merchant');
+    const hasMultipleKeywords = bestData.matches.length >= 2;
+    if (hasMerchantMatch && hasMultipleKeywords) confidence += 0.15;
+
     // Ensure confidence is within bounds
     confidence = Math.max(0.1, Math.min(confidence, 0.9));
+
+    // Determine primary source for reasoning
+    const primarySource = bestData.sources.includes('merchant') ? 'merchant' : 'keyword';
+    const displayMatches = bestData.matches.slice(0, 3).join(', ');
 
     return {
       category: bestCategory,
       confidence: Math.round(confidence * 100) / 100,
-      source: 'keyword',
-      reasoning: `Matched keywords: ${matchedKeywords[bestCategory].slice(0, 3).join(', ')}`
+      source: primarySource,
+      reasoning: `Matched ${primarySource === 'merchant' ? 'merchant/keywords' : 'keywords'}: ${displayMatches}`
     };
+  }
+
+  /**
+   * Calculate contextual score based on action words and position
+   */
+  calculateContextScore(description, match, category) {
+    let score = 1.0; // Base score
+
+    // Action words that indicate the primary transaction purpose
+    const actionWords = {
+      'purchasing': ['Online', 'Grocery'],
+      'buying': ['Online', 'Grocery', 'Gas'],
+      'ordering': ['Dining', 'Online'],
+      'booking': ['Travel'],
+      'paying for': ['Gas', 'Transit', 'Utilities'],
+      'shopping': ['Grocery', 'Online'],
+      'subscription': ['Entertainment', 'Online'],
+      'fee': ['Entertainment', 'Online', 'Utilities']
+    };
+
+    // Position-based scoring (earlier = more important)
+    const matchIndex = description.indexOf(match);
+    const descLength = description.length;
+    const relativePosition = matchIndex / descLength;
+
+    // Earlier mentions get higher score
+    if (relativePosition < 0.3) score += 0.4; // First third
+    else if (relativePosition < 0.6) score += 0.2; // Middle third
+    // Last third gets no bonus
+
+    // Action word context analysis
+    for (const [action, relevantCategories] of Object.entries(actionWords)) {
+      if (description.includes(action)) {
+        if (relevantCategories.includes(category)) {
+          score += 1.0; // Very strong positive signal for action alignment
+        } else {
+          score -= 0.5; // Stronger negative signal for non-relevant categories
+        }
+      }
+    }
+
+    // Context words that modify meaning
+    const contextModifiers = {
+      'during': -0.5, // "during netflix meeting" - netflix is not the transaction
+      'while': -0.5,  // "while listening to spotify" - spotify is background
+      'before': -0.3, // "before my flight" - flight is not the transaction
+      'after': -0.3,
+      'listening to': -0.7, // "listening to spotify" - clearly background
+      'watching': -0.4, // "watching netflix" - might be background
+      'at': 0.3,      // "at starbucks" - positive location indicator
+      'from': 0.4,    // "from amazon" - positive source indicator
+      'on': 0.1,      // "on spotify" - mild positive
+      'for': 0.2      // "for pc parts" - positive purpose indicator
+    };
+
+    for (const [modifier, adjustment] of Object.entries(contextModifiers)) {
+      // Check if modifier appears near the match (within 15 characters)
+      const modifierIndex = description.indexOf(modifier);
+      if (modifierIndex >= 0) {
+        // For multi-word modifiers like "listening to", check if they precede the match
+        if (modifier.includes(' ') && modifierIndex < matchIndex) {
+          score += adjustment;
+        } else if (!modifier.includes(' ') && Math.abs(modifierIndex - matchIndex) <= 15) {
+          score += adjustment;
+        }
+      }
+    }
+
+    // Ensure score stays positive but can be reduced significantly
+    return Math.max(0.1, Math.min(score, 2.0));
   }
 
   /**

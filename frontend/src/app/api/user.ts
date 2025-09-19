@@ -123,10 +123,11 @@ export const removeUserCard = async (cardId: string): Promise<{ success: boolean
 };
 
 export const getCardRecommendation = async (
-  description: string, 
-  amount?: number, 
+  description: string,
+  amount?: number,
   date?: string,
-  userId?: string
+  userId?: string,
+  detectionMethod?: string
 ): Promise<import('@/types').RecommendationResponse> => {
   const token = localStorage.getItem('auth_token');
 
@@ -136,11 +137,13 @@ export const getCardRecommendation = async (
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify({ 
-      description, 
-      amount, 
+    body: JSON.stringify({
+      description,
+      amount,
       date: date || new Date().toISOString(),
-      userId 
+      userId,
+      detectionMethod
+      // Backend logic: if detectionMethod is specified, bypass cache automatically
     }),
   });
 

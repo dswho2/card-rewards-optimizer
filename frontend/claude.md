@@ -839,3 +839,226 @@ npx shadcn-ui@latest add select
 5. **Export Features**: PDF reports and data export
 
 This frontend implementation provides an intuitive, responsive, and accessible interface for the card rewards optimization system.
+
+## UX Enhancement: Prevent Same-Method Re-analysis
+
+### Problem Statement
+Users can currently re-analyze with the same detection method that was just used, which wastes resources and provides no new value. For example:
+- User searches "booking a hotel in NYC"
+- System auto-detects with "Keyword Matching"
+- User can still select "Keyword Matching" from dropdown → identical results
+
+### Solution Architecture
+
+#### Frontend-Only Approach (Recommended)
+**Rationale**: This is primarily a UX improvement to prevent user confusion and unnecessary API calls. Frontend prevention is sufficient since the backend would return identical results anyway.
+
+#### Implementation Plan
+
+**1. Track Current Detection Method**
+```typescript
+// In RecommendationResults component
+interface RecommendationResultsProps {
+  results: RecommendationResponse;
+  onNewSearch: () => void;
+  onReanalyze?: (method: string) => void;
+  mode?: 'purchase' | 'discovery';
+  loading?: boolean;
+}
+
+// Extract current method from results.source
+const getCurrentMethod = (source: string): string => {
+  const sourceMapping = {
+    'keyword': 'keyword',
+    'cache': 'keyword',
+    'merchant': 'keyword',
+    'pinecone_semantic': 'semantic',
+    'semantic': 'semantic',
+    'openai': 'llm',
+    'llm': 'llm'
+  };
+  return sourceMapping[source] || 'keyword';
+};
+
+const currentMethod = getCurrentMethod(results.source);
+```
+
+**2. Update Dropdown Options Rendering**
+```typescript
+// In RecommendationResults component dropdown section
+{detectionMethods.map((method) => {
+  const isCurrentMethod = method.value === currentMethod;
+
+  return (
+    <button
+      key={method.value}
+      onClick={() => handleReanalyze(method.value)}
+      disabled={isCurrentMethod}
+      className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors first:rounded-t-md last:rounded-b-md ${
+        isCurrentMethod
+          ? 'cursor-not-allowed opacity-50 text-gray-400 bg-gray-50'
+          : 'hover:bg-gray-100 cursor-pointer text-gray-900'
+      }`}
+    >
+      {method.icon}
+      <span>{method.label}</span>
+      {isCurrentMethod && (
+        <span className="ml-auto text-xs text-gray-500">(Current)</span>
+      )}
+    </button>
+  );
+})}
+```
+
+**3. Enhanced User Feedback**
+```typescript
+// Add visual indicator for current method in badge
+<Badge variant="secondary" className="flex items-center gap-1 hover:opacity-80">
+  {getSourceConfig(results.source).icon}
+  {getSourceConfig(results.source).label}
+  <span className="text-xs opacity-70">(Current)</span>
+  <ChevronDown className="h-3 w-3" />
+</Badge>
+```
+
+**4. Tooltip Enhancement (Optional)**
+```typescript
+// Add tooltip explaining why option is disabled
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button disabled={isCurrentMethod}>
+        {/* Button content */}
+      </button>
+    </TooltipTrigger>
+    {isCurrentMethod && (
+      <TooltipContent>
+        <p>This method was already used for the current results</p>
+      </TooltipContent>
+    )}
+  </Tooltip>
+</TooltipProvider>
+```
+
+#### Backend Considerations
+
+**Option A: No Backend Changes (Recommended)**
+- Frontend prevents unnecessary calls
+- Backend would return identical results anyway
+- Simpler implementation
+- No additional data tracking required
+
+**Option B: Backend Validation (If Paranoid)**
+```typescript
+// In recommend route - track last method used per session/description
+const sessionCache = new Map(); // description + userId -> last method
+
+router.post('/', async (req, res) => {
+  const { description, detectionMethod, userId } = req.body;
+
+  if (detectionMethod) {
+    const cacheKey = `${description.toLowerCase()}_${userId || 'anonymous'}`;
+    const lastMethod = sessionCache.get(cacheKey);
+
+    if (lastMethod === detectionMethod) {
+      return res.status(400).json({
+        error: 'Same method recently used',
+        message: 'This detection method was already used for this search'
+      });
+    }
+
+    sessionCache.set(cacheKey, detectionMethod);
+  }
+
+  // ... rest of logic
+});
+```
+
+**Recommendation**: Use **Option A** (Frontend-only) because:
+- UX improvement, not security feature
+- Backend would return identical results anyway
+- Avoids unnecessary complexity and memory usage
+- Easier to maintain and debug
+
+#### Visual Design Specifications
+
+**Disabled State Styling**:
+```css
+.dropdown-option-disabled {
+  @apply cursor-not-allowed opacity-50 text-gray-400 bg-gray-50;
+}
+
+.dropdown-option-disabled:hover {
+  @apply bg-gray-50; /* Prevent hover effects */
+}
+```
+
+**Current Method Indicator**:
+- Badge shows "(Current)" next to method name
+- Dropdown option shows "(Current)" on the right
+- Disabled state with muted colors
+- No hover effects on disabled option
+
+#### Error Handling
+
+**Edge Cases**:
+1. **Unknown source types**: Default to allowing all methods
+2. **API errors**: Don't disable any methods
+3. **Cache hits**: Map cache source to original method
+
+```typescript
+const getCurrentMethod = (source: string): string => {
+  try {
+    const sourceMapping = { /* mapping */ };
+    return sourceMapping[source] || null; // Return null for unknown
+  } catch (error) {
+    console.warn('Failed to determine current method:', error);
+    return null; // Allow all methods on error
+  }
+};
+
+// In rendering logic
+const isCurrentMethod = currentMethod ? method.value === currentMethod : false;
+```
+
+#### Testing Strategy
+
+**Test Cases**:
+1. **Initial search**: All methods available in dropdown
+2. **After keyword result**: Keyword disabled, semantic/LLM available
+3. **After semantic result**: Semantic disabled, keyword/LLM available
+4. **After LLM result**: LLM disabled, keyword/semantic available
+5. **Unknown source**: All methods available (graceful degradation)
+6. **API error scenarios**: All methods remain available
+
+#### Implementation Timeline
+
+**Phase 1** (30 minutes):
+- Add current method detection logic
+- Update dropdown rendering with disabled states
+
+**Phase 2** (15 minutes):
+- Add visual indicators and styling
+- Test across different detection methods
+
+**Phase 3** (15 minutes):
+- Add error handling for edge cases
+- Test graceful degradation scenarios
+
+#### Benefits
+
+**User Experience**:
+- ✅ Prevents confusion about "why same results?"
+- ✅ Guides users to try different methods
+- ✅ Reduces unnecessary API calls
+- ✅ Clear visual feedback about current state
+
+**Technical**:
+- ✅ Simple frontend-only solution
+- ✅ No backend complexity
+- ✅ Easy to maintain and extend
+- ✅ Graceful error handling
+
+This enhancement improves user experience by preventing redundant re-analysis while maintaining simplicity and robustness.

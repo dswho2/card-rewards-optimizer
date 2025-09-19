@@ -16,7 +16,8 @@ router.post('/', [
   body('description').isString().isLength({ min: 1, max: 500 }),
   body('amount').optional().isNumeric({ min: 0 }),
   body('date').optional().isISO8601(),
-  body('userId').optional().isUUID()
+  body('userId').optional().isUUID(),
+  body('detectionMethod').optional().isIn(['keyword', 'semantic', 'openai'])
 ], async (req, res) => {
   try {
     const requestId = Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -32,12 +33,12 @@ router.post('/', [
       });
     }
 
-    const { description, amount = 0, date = new Date(), userId } = req.body;
+    const { description, amount = 0, date = new Date(), userId, detectionMethod } = req.body;
 
     // 1. Categorize the purchase description
-    console.log(`[API:${requestId}] Categorizing description: "${description}"`);
+    console.log(`[API:${requestId}] Categorizing description: "${description}"${detectionMethod ? ` with method: ${detectionMethod}` : ''}`);
     const categorizationStart = Date.now();
-    const categoryResult = await categoryService.categorize(description);
+    const categoryResult = await categoryService.categorize(description, detectionMethod);
     const categorizationDuration = Date.now() - categorizationStart;
     
     console.log(`[API:${requestId}] Categorization complete:`, {

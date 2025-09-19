@@ -133,6 +133,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1.5% on all other purchases"
+            },
+            {
+                "category": "All",
+                "multiplier": 3,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "3% on drugstore purchases"
             }
         ]
     },
@@ -182,6 +192,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "1% on all other purchases"
+            },
+            {
+                "category": "All",
+                "multiplier": 3,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "3% on drugstore purchases"
             }
         ]
     },
@@ -230,7 +250,7 @@
                 "notes": "2% cash back on travel"
             },
             {
-                "category": "Airlines",
+                "category": "Travel",
                 "multiplier": 5,
                 "reward_type": "fixed",
                 "cap": null,
@@ -259,7 +279,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-united/quest-card.png",
         "rewards": [
             {
-                "category": "Airlines",
+                "category": "Travel",
                 "multiplier": 8,
                 "reward_type": "fixed",
                 "cap": null,
@@ -269,7 +289,7 @@
                 "notes": "8× miles on United flights"
             },
             {
-                "category": "Airlines",
+                "category": "Travel",
                 "multiplier": 5,
                 "reward_type": "fixed",
                 "cap": null,
@@ -298,7 +318,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-united/gateway-card.png",
         "rewards": [
             {
-                "category": "Airlines",
+                "category": "Travel",
                 "multiplier": 2,
                 "reward_type": "fixed",
                 "cap": null,
@@ -347,7 +367,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-united/club-card.png",
         "rewards": [
             {
-                "category": "Airlines",
+                "category": "Travel",
                 "multiplier": 4,
                 "reward_type": "fixed",
                 "cap": null,
@@ -406,7 +426,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-southwest/plus-card.png",
         "rewards": [
             {
-                "category": "Airlines",
+                "category": "All",
                 "multiplier": 2,
                 "reward_type": "fixed",
                 "cap": null,
@@ -455,7 +475,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-southwest/priority-card.png",
         "rewards": [
             {
-                "category": "Airlines",
+                "category": "All",
                 "multiplier": 4,
                 "reward_type": "fixed",
                 "cap": null,
@@ -504,7 +524,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-southwest/premier-card.png",
         "rewards": [
             {
-                "category": "Airlines",
+                "category": "All",
                 "multiplier": 3,
                 "reward_type": "fixed",
                 "cap": null,
@@ -564,6 +584,26 @@
         "rewards": [
             {
                 "category": "All",
+                "multiplier": 5,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "5% back at Amazon.com and Whole Foods"
+            },
+            {
+                "category": "All",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "2% back at restaurants, gas stations, and on eligible local transit"
+            },
+            {
+                "category": "All",
                 "multiplier": 1,
                 "reward_type": "fixed",
                 "cap": null,
@@ -582,6 +622,16 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-hyatt/world-of-hyatt-card.png",
         "rewards": [
             {
+                "category": "All",
+                "multiplier": 4,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "4× points at Hyatt hotels"
+            },
+            {
                 "category": "Dining",
                 "multiplier": 2,
                 "reward_type": "fixed",
@@ -590,6 +640,16 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2% cash back on dining"
+            },
+            {
+                "category": "All",
+                "multiplier": 1,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": null,
+                "end_date": null,
+                "notes": "1× on all other purchases"
             },
             {
                 "category": "Travel",
@@ -610,16 +670,6 @@
                 "start_date": null,
                 "end_date": null,
                 "notes": "2% cash back on transit"
-            },
-            {
-                "category": "All",
-                "multiplier": 1,
-                "reward_type": "fixed",
-                "cap": null,
-                "portal_only": false,
-                "start_date": null,
-                "end_date": null,
-                "notes": "1× on all other purchases"
             }
         ]
     },
@@ -631,7 +681,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-marriott/boundless-card.png",
         "rewards": [
             {
-                "category": "Hotels",
+                "category": "Travel",
                 "multiplier": 6,
                 "reward_type": "fixed",
                 "cap": null,
@@ -690,7 +740,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-marriott/bountiful-card.png",
         "rewards": [
             {
-                "category": "Hotels",
+                "category": "Travel",
                 "multiplier": 17,
                 "reward_type": "fixed",
                 "cap": null,
@@ -749,7 +799,7 @@
         "image_url": "https://creditcards.chase.com/content/dam/public/cc-marriott/bold-card.png",
         "rewards": [
             {
-                "category": "Hotels",
+                "category": "Travel",
                 "multiplier": 14,
                 "reward_type": "fixed",
                 "cap": null,
@@ -1386,6 +1436,26 @@
         "image_url": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/assets/bor-customized-cash-rewards.png",
         "rewards": [
             {
+                "category": "All",
+                "multiplier": 6,
+                "reward_type": "fixed",
+                "cap": 2500,
+                "portal_only": false,
+                "start_date": "2025-06-01",
+                "end_date": "2026-05-31",
+                "notes": "6% cash back in your choice category first year (up to $2,500/quarter combined)"
+            },
+            {
+                "category": "All",
+                "multiplier": 3,
+                "reward_type": "fixed",
+                "cap": 2500,
+                "portal_only": false,
+                "start_date": "2026-06-01",
+                "end_date": null,
+                "notes": "3% cash back in your choice category after first year (up to $2,500/quarter combined)"
+            },
+            {
                 "category": "Grocery",
                 "multiplier": 2,
                 "reward_type": "fixed",
@@ -1414,6 +1484,16 @@
         "annual_fee": 0,
         "image_url": "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-back-credit-card/assets/boa-unlimited-cash-rewards.png",
         "rewards": [
+            {
+                "category": "All",
+                "multiplier": 2,
+                "reward_type": "fixed",
+                "cap": null,
+                "portal_only": false,
+                "start_date": "2025-06-01",
+                "end_date": "2026-05-31",
+                "notes": "2% cash back on all purchases first year"
+            },
             {
                 "category": "All",
                 "multiplier": 1.5,
