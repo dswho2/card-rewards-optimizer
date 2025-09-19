@@ -22,7 +22,7 @@ interface RecommendationResultsProps {
   onReanalyze?: (method: string) => void;
   mode?: 'purchase' | 'discovery';
   loading?: boolean;
-  reanalyzingMethod?: string;
+  reanalyzingMethod?: string | null;
 }
 
 export function RecommendationResults({ results, onNewSearch, onReanalyze, mode, loading, reanalyzingMethod }: RecommendationResultsProps) {
