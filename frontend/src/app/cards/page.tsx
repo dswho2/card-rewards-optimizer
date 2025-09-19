@@ -8,7 +8,7 @@ import type { Card, RecommendationResponse } from '@/types';
 import CreditCardItem from '@/components/CreditCardItem';
 import AddCardModal from '@/components/AddCardModal';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { removeUserCard } from '@/app/api/user';
+import { removeUserCard, updateCardPositions } from '@/app/api/user';
 import {
   DndContext,
   closestCenter,
@@ -63,7 +63,7 @@ export default function CardsPage() {
 
 
   const { isLoggedIn, mounted } = useAuthState();
-  const { cards, loading, refetchCards, removeCard: removeCardFromContext } = useUser();
+  const { cards, loading, refetchCards, removeCard: removeCardFromContext, reorderCards } = useUser();
 
   // ✅ CORRECT: Move useCallback to top level with other hooks
   const handleDeleteClick = useCallback((cardId: string) => {
@@ -117,17 +117,42 @@ export default function CardsPage() {
     await refetchCards();
   }, [refetchCards]);
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over?.id) {
-      const oldIndex = cards.findIndex(c => c.id === active.id);
-      const newIndex = cards.findIndex(c => c.id === over?.id);
-      // For now, we'll just update locally. In a real app, you might want to save the order to the backend
-      const reorderedCards = arrayMove(cards, oldIndex, newIndex);
-      // Note: This would require adding an action to the context to handle reordering
-      console.log('Card reordered:', { oldIndex, newIndex });
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = cards.findIndex(c => c.id === active.id);
+    const newIndex = cards.findIndex(c => c.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Optimistically update the UI
+    const reorderedCards = arrayMove(cards, oldIndex, newIndex);
+
+    // Update positions to match array indices
+    const cardsWithNewPositions = reorderedCards.map((card, index) => ({
+      ...card,
+      position: index
+    }));
+
+    reorderCards(cardsWithNewPositions);
+
+    try {
+      // Persist to backend
+      const cardOrders = cardsWithNewPositions.map((card, index) => ({
+        cardId: card.id,
+        position: index
+      }));
+
+      await updateCardPositions(cardOrders);
+      console.log('Card order successfully saved to backend');
+    } catch (error) {
+      console.error('Failed to save card order:', error);
+      // Revert on error by refetching from server
+      await refetchCards();
+      alert('Failed to save card order. Reverting to previous order.');
     }
-  }, [cards]);
+  }, [cards, reorderCards, refetchCards]);
 
   // ✅ CORRECT: Conditional rendering without early returns
   // Show loading state during hydration

@@ -74,6 +74,50 @@ export const saveUserCard = async (
   }
 };
 
+export const updateCardPositions = async (cardOrders: { cardId: string; position: number }[]): Promise<{ success: boolean; message?: string }> => {
+  const token = localStorage.getItem('auth_token');
+
+  if (!token) {
+    throw new Error('You need to log in to reorder cards');
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/user-cards/reorder`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ cardOrders }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      let errorMessage = 'Failed to update card positions';
+      if (res.status === 401) {
+        errorMessage = 'You need to log in again';
+      } else if (res.status === 400) {
+        errorMessage = data.error || 'Invalid request';
+      } else if (res.status === 500) {
+        errorMessage = 'Server error - please try again';
+      }
+      throw new Error(errorMessage);
+    }
+
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to update card positions');
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+    throw error;
+  }
+};
+
 export const removeUserCard = async (cardId: string): Promise<{ success: boolean; message?: string }> => {
   const token = localStorage.getItem('auth_token');
 

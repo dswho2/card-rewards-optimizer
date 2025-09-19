@@ -34,6 +34,7 @@ export interface Card {
   notes?: string;
   issuer?: string;
   network?: string;
+  position?: number;
 }
 
 // Backend recommendation response types

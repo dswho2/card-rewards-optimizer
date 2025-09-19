@@ -16,15 +16,17 @@ interface UserContextValue extends UserState {
   refetchCards: () => Promise<void>;
   addCard: (card: Card) => void;
   removeCard: (cardId: string) => void;
+  reorderCards: (cards: Card[]) => void;
   clearUserData: () => void;
 }
 
-type UserAction = 
+type UserAction =
   | { type: 'FETCH_START' }
   | { type: 'FETCH_SUCCESS'; payload: Card[] }
   | { type: 'FETCH_ERROR'; payload: string }
   | { type: 'ADD_CARD'; payload: Card }
   | { type: 'REMOVE_CARD'; payload: string }
+  | { type: 'REORDER_CARDS'; payload: Card[] }
   | { type: 'CLEAR_DATA' };
 
 const initialState: UserState = {
@@ -65,6 +67,11 @@ function userReducer(state: UserState, action: UserAction): UserState {
       return {
         ...state,
         cards: state.cards.filter(card => card.id !== action.payload),
+      };
+    case 'REORDER_CARDS':
+      return {
+        ...state,
+        cards: action.payload,
       };
     case 'CLEAR_DATA':
       return initialState;
@@ -135,6 +142,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     refetchCards: fetchCards,
     addCard: (card: Card) => dispatch({ type: 'ADD_CARD', payload: card }),
     removeCard: (cardId: string) => dispatch({ type: 'REMOVE_CARD', payload: cardId }),
+    reorderCards: (cards: Card[]) => dispatch({ type: 'REORDER_CARDS', payload: cards }),
     clearUserData: () => dispatch({ type: 'CLEAR_DATA' }),
   }), [state, fetchCards]);
 
