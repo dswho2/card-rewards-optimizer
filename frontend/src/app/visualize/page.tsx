@@ -9,17 +9,6 @@ export default function VisualizePage() {
   const { isLoggedIn, mounted } = useAuthState();
   const { cards, loading, error, refetchCards } = useUser();
 
-  // Debug logging
-  console.log('Visualize page state:', { 
-    isLoggedIn, 
-    mounted, 
-    cardsCount: cards.length, 
-    loading, 
-    error,
-    cards: cards.slice(0, 2) // First 2 cards for debugging
-  });
-
-
   // Show loading state during hydration
   if (!mounted) {
     return (

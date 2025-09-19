@@ -3,8 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useAuthState } from '@/hooks/useAuthState';
 import { SmartRecommendationResults, type SmartRecommendationResults as SmartRecommendationResultsType } from '@/components/SmartRecommendationResults';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+import { analyzePortfolio, searchCards } from '@/app/api/user';
 
 export default function DiscoverPage() {
   // Main view state
@@ -29,9 +28,9 @@ export default function DiscoverPage() {
     cards?: Array<{
       id: string;
       name: string;
-      issuer: string;
+      issuer?: string;
       annual_fee: number;
-      network: string;
+      network?: string;
       rewards?: Array<{ category: string; multiplier: number }>;
     }>;
   } | null>(null);
@@ -54,45 +53,10 @@ export default function DiscoverPage() {
     setDiscoveryError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/cards/analyze-portfolio`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-        },
-        body: JSON.stringify({
-          mode: currentView === 'category' ? 'category' : 'auto',
-          category: currentView === 'category' ? selectedCategory : undefined
-        })
-      });
-
-      if (!response.ok) {
-        let errorMessage = 'Analysis failed';
-        try {
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorData.error || errorMessage;
-          } else {
-            // Handle HTML error pages (likely authentication errors)
-            if (response.status === 401 || response.status === 403) {
-              errorMessage = 'Authentication required. Please log in again.';
-            } else {
-              errorMessage = `Server error (${response.status})`;
-            }
-          }
-        } catch (parseError) {
-          console.error('Error parsing error response:', parseError);
-        }
-        throw new Error(errorMessage);
-      }
-
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server returned invalid response format');
-      }
-
-      const results = await response.json();
+      const results = await analyzePortfolio(
+        currentView === 'category' ? 'category' : 'auto',
+        currentView === 'category' ? selectedCategory : undefined
+      );
       setDiscoveryResults(results);
     } catch (err) {
       if (err instanceof Error) {
@@ -115,16 +79,8 @@ export default function DiscoverPage() {
   const handleCardSearch = useCallback(async () => {
     setSearchLoading(true);
     try {
-      const params = new URLSearchParams();
-      Object.entries(searchFilters).forEach(([key, value]) => {
-        if (value) params.append(key, value);
-      });
-
-      const response = await fetch(`${API_BASE_URL}/api/cards?${params}`);
-      if (!response.ok) throw new Error('Search failed');
-
-      const results = await response.json();
-      setSearchResults(results);
+      const cards = await searchCards(searchFilters);
+      setSearchResults({ cards });
     } catch (err) {
       console.error('Search failed:', err);
     } finally {
@@ -482,7 +438,7 @@ export default function DiscoverPage() {
                     <div key={card.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg border shadow-sm">
                       <div className="mb-3">
                         <h4 className="font-semibold text-lg">{card.name}</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{card.issuer}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{card.issuer || 'Unknown Issuer'}</p>
                       </div>
 
                       <div className="space-y-2 text-sm">
@@ -494,7 +450,7 @@ export default function DiscoverPage() {
                         </div>
                         <div className="flex justify-between">
                           <span>Network:</span>
-                          <span className="font-medium">{card.network}</span>
+                          <span className="font-medium">{card.network || 'Unknown'}</span>
                         </div>
                       </div>
 

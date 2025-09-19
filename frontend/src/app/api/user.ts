@@ -183,3 +183,49 @@ export const searchCards = async (params: {
   const data = await res.json();
   return data.cards || [];
 };
+
+export const analyzePortfolio = async (
+  mode: 'auto' | 'category',
+  category?: string
+): Promise<any> => {
+  const token = localStorage.getItem('auth_token');
+
+  if (!token) {
+    throw new Error('You need to log in to use portfolio analysis');
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/cards/analyze-portfolio`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        mode,
+        category: mode === 'category' ? category : undefined
+      }),
+    });
+
+    if (!res.ok) {
+      let errorMessage = 'Portfolio analysis failed';
+      if (res.status === 401) {
+        errorMessage = 'You need to log in again';
+      } else if (res.status === 400) {
+        const data = await res.json();
+        errorMessage = data.error || 'Invalid request';
+      } else if (res.status === 500) {
+        errorMessage = 'Server error - please try again';
+      }
+      throw new Error(errorMessage);
+    }
+
+    return await res.json();
+  } catch (error) {
+    // Handle network errors
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error. Please check your connection and try again.');
+    }
+    throw error;
+  }
+};
