@@ -28,7 +28,7 @@ export interface Reward {
 export interface Card {
   id: string;
   name: string;
-  image_url: string;
+  image_url: string | null;
   rewards: Reward[];
   annual_fee: number;
   notes?: string;

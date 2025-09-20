@@ -20,6 +20,7 @@ class CardImageUploader {
     }
 
     this.existingFiles = new Set();
+    this.existingBlobPaths = new Set();
     this.uploadedMappings = {};
     this.skippedFiles = [];
     this.failedUploads = [];
@@ -34,8 +35,11 @@ class CardImageUploader {
         prefix: BLOB_PREFIX
       });
 
+      // Store both full paths and filenames for better duplicate detection
+      this.existingBlobPaths = new Set();
       blobs.forEach(blob => {
-        // Extract filename from blob pathname
+        this.existingBlobPaths.add(blob.pathname);
+        // Also add just filename for backwards compatibility
         const filename = path.basename(blob.pathname);
         this.existingFiles.add(filename);
       });
@@ -45,6 +49,7 @@ class CardImageUploader {
     } catch (error) {
       console.error('Error fetching existing files:', error.message);
       // Continue without existing files check if list fails
+      this.existingBlobPaths = new Set();
       return new Set();
     }
   }
@@ -113,11 +118,21 @@ class CardImageUploader {
 
       return blob;
     } catch (error) {
-      console.error(`❌ Failed to upload ${file.filename}:`, error.message);
-      this.failedUploads.push({
-        filename: file.filename,
-        error: error.message
-      });
+      // Handle duplicate file errors more gracefully
+      if (error.message.includes('This blob already exists')) {
+        console.log(`⏭️  Skipping ${file.filename} - already exists in blob storage`);
+        this.skippedFiles.push({
+          filename: file.filename,
+          blobPath: blobPath,
+          reason: 'Already exists (caught at upload)'
+        });
+      } else {
+        console.error(`❌ Failed to upload ${file.filename}`);
+        this.failedUploads.push({
+          filename: file.filename,
+          error: error.message.split('.')[0] // Just the first sentence of error
+        });
+      }
       return null;
     }
   }
@@ -128,10 +143,14 @@ class CardImageUploader {
     const duplicates = [];
 
     localImages.forEach(file => {
-      if (this.existingFiles.has(file.filename)) {
+      const blobPath = this.generateBlobPath(file.filename);
+
+      // Check if this exact blob path already exists
+      if (this.existingBlobPaths && this.existingBlobPaths.has(blobPath)) {
         duplicates.push(file.filename);
         this.skippedFiles.push({
           filename: file.filename,
+          blobPath: blobPath,
           reason: 'Already exists in blob storage'
         });
       } else {
@@ -140,7 +159,7 @@ class CardImageUploader {
     });
 
     if (duplicates.length > 0) {
-      console.log(`⏭️  Skipping ${duplicates.length} duplicate files:`, duplicates);
+      console.log(`⏭️  Skipping ${duplicates.length} duplicate files: ${duplicates.join(', ')}`);
     }
 
     return newFiles;

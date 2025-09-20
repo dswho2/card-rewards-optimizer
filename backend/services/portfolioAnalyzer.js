@@ -73,7 +73,7 @@ class PortfolioAnalyzer {
           improvement: `+${improvement.toFixed(1)}%`,
           annualFee: card.annual_fee,
           rewards: card.rewards,
-          imageUrl: card.image_url || `/api/cards/${card.id}/image`
+          imageUrl: card.image_url
         });
       }
     }
@@ -143,7 +143,8 @@ class PortfolioAnalyzer {
           issuer: card.issuer,
           rate: bestRateForCard,
           annualFee: card.annual_fee,
-          reward: bestReward
+          reward: bestReward,
+          imageUrl: card.image_url
         });
       }
     }
@@ -183,7 +184,7 @@ class PortfolioAnalyzer {
             improvementValue: cardRate - gap.userBestRate,
             annualFee: card.annual_fee,
             rewards: card.rewards,
-            imageUrl: card.image_url || `/api/cards/${card.id}/image`
+            imageUrl: card.image_url
           });
         }
       }
@@ -231,7 +232,7 @@ class PortfolioAnalyzer {
     const placeholders = cardIds.map((_, i) => `$${i + 1}`).join(',');
 
     const result = await db.query(`
-      SELECT c.id, c.name, c.issuer, c.annual_fee, c.network,
+      SELECT c.id, c.name, c.issuer, c.annual_fee, c.network, c.image_url,
              r.multiplier, r.category, r.cap, r.portal_only
       FROM cards c
       LEFT JOIN card_rewards r ON c.id = r.card_id
@@ -244,7 +245,7 @@ class PortfolioAnalyzer {
 
   async getUserCards(userId) {
     const result = await db.query(`
-      SELECT c.id, c.name, c.issuer, c.annual_fee, c.network,
+      SELECT c.id, c.name, c.issuer, c.annual_fee, c.network, c.image_url,
              r.multiplier, r.category, r.cap, r.portal_only
       FROM user_cards uc
       INNER JOIN cards c ON uc.card_id = c.id
@@ -266,6 +267,7 @@ class PortfolioAnalyzer {
           issuer: row.issuer,
           annual_fee: row.annual_fee,
           network: row.network,
+          image_url: row.image_url,
           rewards: []
         });
       }

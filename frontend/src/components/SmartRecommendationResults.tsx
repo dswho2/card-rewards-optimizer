@@ -32,6 +32,7 @@ interface UserCard {
   issuer: string;
   annualFee: number;
   rate: number;
+  imageUrl?: string;
 }
 
 interface Analysis {
@@ -185,7 +186,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
                           issuer: card.issuer,
                           annual_fee: card.annualFee || 0,
                           rewards: card.rewards || [],
-                          image_url: card.imageUrl || `/api/cards/${card.cardId}/image`,
+                          image_url: card.imageUrl || null,
                           notes: ''
                         }}
                         issuer={card.issuer}
@@ -277,7 +278,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
                     issuer: card.issuer,
                     annual_fee: card.annualFee || 0,
                     rewards: [],
-                    image_url: `/api/cards/${card.cardId}/image`,
+                    image_url: card.imageUrl || null,
                     notes: ''
                   }}
                   issuer={card.issuer}
@@ -314,7 +315,7 @@ export function SmartRecommendationResults({ results, onNewAnalysis }: SmartReco
                     issuer: card.issuer,
                     annual_fee: card.annualFee || 0,
                     rewards: card.rewards || [],
-                    image_url: card.imageUrl || `/api/cards/${card.cardId}/image`,
+                    image_url: card.imageUrl || null,
                     notes: ''
                   }}
                   issuer={card.issuer}

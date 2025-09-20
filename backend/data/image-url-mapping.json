@@ -1,17 +1,222 @@
 {
-  "generatedAt": "2025-09-20T01:46:28.122Z",
-  "totalUploaded": 1,
-  "totalSkipped": 0,
+  "generatedAt": "2025-09-20T02:54:27.254Z",
+  "totalUploaded": 28,
+  "totalSkipped": 3,
   "totalFailed": 0,
   "mappings": {
-    "capital-savor-rewards.webp": {
-      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-savor-rewards.webp",
-      "blobPath": "cards/capital/savor-rewards.webp",
-      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/savor-rewards.webp",
-      "uploadedAt": "2025-09-20T01:46:28.120Z",
-      "size": 7530
+    "amex-delta-skymiles-platinum.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\amex-delta-skymiles-platinum.webp",
+      "blobPath": "cards/amex/delta-skymiles-platinum.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/delta-skymiles-platinum.webp",
+      "uploadedAt": "2025-09-20T02:54:24.021Z",
+      "size": 11748
+    },
+    "amex-delta-skymiles-gold.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\amex-delta-skymiles-gold.webp",
+      "blobPath": "cards/amex/delta-skymiles-gold.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/delta-skymiles-gold.webp",
+      "uploadedAt": "2025-09-20T02:54:24.031Z",
+      "size": 15012
+    },
+    "amex-blue-cash-preferred.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\amex-blue-cash-preferred.webp",
+      "blobPath": "cards/amex/blue-cash-preferred.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/blue-cash-preferred.webp",
+      "uploadedAt": "2025-09-20T02:54:24.033Z",
+      "size": 30990
+    },
+    "amex-delta-skymiles-blue.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\amex-delta-skymiles-blue.webp",
+      "blobPath": "cards/amex/delta-skymiles-blue.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/delta-skymiles-blue.webp",
+      "uploadedAt": "2025-09-20T02:54:24.159Z",
+      "size": 16626
+    },
+    "amex-blue-cash-everyday.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\amex-blue-cash-everyday.webp",
+      "blobPath": "cards/amex/blue-cash-everyday.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/blue-cash-everyday.webp",
+      "uploadedAt": "2025-09-20T02:54:24.193Z",
+      "size": 21800
+    },
+    "bofa-customized-cash.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\bofa-customized-cash.webp",
+      "blobPath": "cards/bofa/customized-cash.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/customized-cash.webp",
+      "uploadedAt": "2025-09-20T02:54:24.679Z",
+      "size": 10538
+    },
+    "bofa-travel.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\bofa-travel.webp",
+      "blobPath": "cards/bofa/travel.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/travel.webp",
+      "uploadedAt": "2025-09-20T02:54:24.689Z",
+      "size": 10992
+    },
+    "amex-platinum.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\amex-platinum.webp",
+      "blobPath": "cards/amex/platinum.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/platinum.webp",
+      "uploadedAt": "2025-09-20T02:54:24.722Z",
+      "size": 31940
+    },
+    "bofa-premium.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\bofa-premium.webp",
+      "blobPath": "cards/bofa/premium.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/premium.webp",
+      "uploadedAt": "2025-09-20T02:54:24.724Z",
+      "size": 8450
+    },
+    "bofa-bankamericard.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\bofa-bankamericard.webp",
+      "blobPath": "cards/bofa/bankamericard.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/bankamericard.webp",
+      "uploadedAt": "2025-09-20T02:54:24.744Z",
+      "size": 7400
+    },
+    "bofa-unlimited-cash.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\bofa-unlimited-cash.webp",
+      "blobPath": "cards/bofa/unlimited-cash.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/unlimited-cash.webp",
+      "uploadedAt": "2025-09-20T02:54:25.221Z",
+      "size": 6550
+    },
+    "capital-quicksilverone.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-quicksilverone.webp",
+      "blobPath": "cards/capital/quicksilverone.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/quicksilverone.webp",
+      "uploadedAt": "2025-09-20T02:54:25.222Z",
+      "size": 5596
+    },
+    "capital-spark-1-classic.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-spark-1-classic.webp",
+      "blobPath": "cards/capital/spark-1-classic.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-1-classic.webp",
+      "uploadedAt": "2025-09-20T02:54:25.230Z",
+      "size": 6768
+    },
+    "capital-platinum.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-platinum.webp",
+      "blobPath": "cards/capital/platinum.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/platinum.webp",
+      "uploadedAt": "2025-09-20T02:54:25.265Z",
+      "size": 38604
+    },
+    "capital-quicksilver.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-quicksilver.webp",
+      "blobPath": "cards/capital/quicksilver.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/quicksilver.webp",
+      "uploadedAt": "2025-09-20T02:54:25.436Z",
+      "size": 5184
+    },
+    "capital-ventureone.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-ventureone.webp",
+      "blobPath": "cards/capital/ventureone.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/ventureone.webp",
+      "uploadedAt": "2025-09-20T02:54:25.913Z",
+      "size": 12760
+    },
+    "capital-venture-x.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-venture-x.webp",
+      "blobPath": "cards/capital/venture-x.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/venture-x.webp",
+      "uploadedAt": "2025-09-20T02:54:25.928Z",
+      "size": 8070
+    },
+    "capital-spark-2-cash.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-spark-2-cash.webp",
+      "blobPath": "cards/capital/spark-2-cash.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-2-cash.webp",
+      "uploadedAt": "2025-09-20T02:54:25.956Z",
+      "size": 7136
+    },
+    "capital-spark-15-cash-select.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-spark-15-cash-select.webp",
+      "blobPath": "cards/capital/spark-15-cash-select.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-15-cash-select.webp",
+      "uploadedAt": "2025-09-20T02:54:25.957Z",
+      "size": 7136
+    },
+    "capital-venture.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-venture.webp",
+      "blobPath": "cards/capital/venture.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/venture.webp",
+      "uploadedAt": "2025-09-20T02:54:25.973Z",
+      "size": 12034
+    },
+    "chase-freedom-unlimited.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-freedom-unlimited.webp",
+      "blobPath": "cards/chase/freedom-unlimited.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/freedom-unlimited.webp",
+      "uploadedAt": "2025-09-20T02:54:26.472Z",
+      "size": 10710
+    },
+    "chase-sapphire-reserve.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-sapphire-reserve.webp",
+      "blobPath": "cards/chase/sapphire-reserve.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/sapphire-reserve.webp",
+      "uploadedAt": "2025-09-20T02:54:26.484Z",
+      "size": 7456
+    },
+    "chase-freedom-flex.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-freedom-flex.webp",
+      "blobPath": "cards/chase/freedom-flex.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/freedom-flex.webp",
+      "uploadedAt": "2025-09-20T02:54:26.485Z",
+      "size": 9862
+    },
+    "chase-prime.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-prime.webp",
+      "blobPath": "cards/chase/prime.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/prime.webp",
+      "uploadedAt": "2025-09-20T02:54:26.685Z",
+      "size": 11688
+    },
+    "chase-sapphire-preferred.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-sapphire-preferred.webp",
+      "blobPath": "cards/chase/sapphire-preferred.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/sapphire-preferred.webp",
+      "uploadedAt": "2025-09-20T02:54:26.749Z",
+      "size": 14932
+    },
+    "chase-united-gateway.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-united-gateway.webp",
+      "blobPath": "cards/chase/united-gateway.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/united-gateway.webp",
+      "uploadedAt": "2025-09-20T02:54:27.243Z",
+      "size": 8546
+    },
+    "chase-united-club.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-united-club.webp",
+      "blobPath": "cards/chase/united-club.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/united-club.webp",
+      "uploadedAt": "2025-09-20T02:54:27.251Z",
+      "size": 8486
+    },
+    "chase-slate-edge.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\chase-slate-edge.webp",
+      "blobPath": "cards/chase/slate-edge.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/slate-edge.webp",
+      "uploadedAt": "2025-09-20T02:54:27.253Z",
+      "size": 12754
     }
   },
-  "skipped": [],
+  "skipped": [
+    {
+      "filename": "amex-gold.webp",
+      "blobPath": "cards/amex/gold.webp",
+      "reason": "Already exists in blob storage"
+    },
+    {
+      "filename": "amex-green.webp",
+      "blobPath": "cards/amex/green.webp",
+      "reason": "Already exists in blob storage"
+    },
+    {
+      "filename": "capital-savor-rewards.webp",
+      "blobPath": "cards/capital/savor-rewards.webp",
+      "reason": "Already exists in blob storage"
+    }
+  ],
   "failed": []
 }
