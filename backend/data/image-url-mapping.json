@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2025-09-20T01:46:28.122Z",
+  "totalUploaded": 1,
+  "totalSkipped": 0,
+  "totalFailed": 0,
+  "mappings": {
+    "capital-savor-rewards.webp": {
+      "localPath": "C:\\Users\\david\\Documents\\card-rewards-optimizer\\backend\\data\\images\\capital-savor-rewards.webp",
+      "blobPath": "cards/capital/savor-rewards.webp",
+      "blobUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/savor-rewards.webp",
+      "uploadedAt": "2025-09-20T01:46:28.120Z",
+      "size": 7530
+    }
+  },
+  "skipped": [],
+  "failed": []
+}

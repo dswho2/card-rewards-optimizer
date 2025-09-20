@@ -1,7 +1,9 @@
 // src/components/CreditCardItem.tsx
 'use client';
 
+import { useState } from 'react';
 import { SquareX, GripVertical } from 'lucide-react';
+import Image from 'next/image';
 import type { Card, Reward } from '@/types';
 
 interface CardProps {
@@ -23,6 +25,8 @@ export default function CreditCardItem({
   issuer,
   className = ""
 }: CardProps) {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const formatRewards = (rewards: Reward[]) => {
     if (!rewards || rewards.length === 0) return 'No rewards';
 
@@ -81,11 +85,36 @@ export default function CreditCardItem({
             </>
         )}
 
-        <img
-            src={card.image_url}
-            alt={card.name}
-            className="w-full md:w-48 h-auto object-contain border rounded"
-        />
+        <div className="relative w-full md:w-48 h-32 border rounded overflow-hidden bg-gray-50 dark:bg-gray-800">
+          {card.image_url && !imageError ? (
+            <Image
+              src={card.image_url}
+              alt={card.name}
+              fill
+              className="object-contain"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 192px"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-600">
+              <div className="text-center p-4">
+                <div className="text-2xl mb-2">💳</div>
+                <div className="text-xs">
+                  {card.network ? `${card.network} Card` : 'Credit Card'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Loading state */}
+          {card.image_url && !imageLoaded && !imageError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+              <div className="animate-pulse text-gray-400">Loading...</div>
+            </div>
+          )}
+        </div>
 
         <div className="flex-1">
             <h3 className="text-xl font-semibold mb-1">{card.name}</h3>

@@ -36,6 +36,24 @@ const isValidCard = (card: Card) => {
   );
 };
 
+const isValidImageUrl = (url: string | null): boolean => {
+  if (!url) return false;
+
+  // Check if it's a valid URL format
+  try {
+    new URL(url);
+  } catch {
+    return false;
+  }
+
+  // Check if it's a blob URL or other valid image URL
+  const isBlobUrl = url.includes('vercel-storage.com') || url.includes('blob.vercel-storage.com');
+  const isHttpUrl = url.startsWith('http://') || url.startsWith('https://');
+  const isImageFile = /\.(jpg|jpeg|png|webp|gif)$/i.test(url);
+
+  return (isBlobUrl || isHttpUrl) && isImageFile;
+};
+
 const loadCards = async () => {
   const filePath = path.join(__dirname, '../data', CARD_DATA_FILE);
   const rawJson = fs.readFileSync(filePath, 'utf-8');
@@ -58,6 +76,18 @@ const loadCards = async () => {
     const network = card.network?.trim() || null;
     const annual_fee = Number(card.annual_fee) || 0;
     const image_url = card.image_url?.trim() || null;
+
+    // Validate and log image URL type
+    if (image_url) {
+      if (isValidImageUrl(image_url)) {
+        const urlType = image_url.includes('vercel-storage.com') ? 'blob' : 'external';
+        console.log(`  📸 Valid ${urlType} image URL: ${image_url.substring(0, 60)}...`);
+      } else {
+        console.warn(`  ⚠️  Invalid image URL for ${name}: ${image_url}`);
+      }
+    } else {
+      console.log(`  📭 No image URL for ${name}`);
+    }
 
     await pool.query('BEGIN');
     try {

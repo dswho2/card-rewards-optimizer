@@ -1,0 +1,420 @@
+{
+  "updatedAt": "2025-09-20T01:45:52.961Z",
+  "summary": {
+    "updated": 51,
+    "skipped": 0,
+    "failed": 0
+  },
+  "updatedCards": [
+    {
+      "id": "b0ba6dac-a22d-4701-825e-20548550b68b",
+      "name": "American Express Gold Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/gold-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/gold.webp",
+      "filename": "amex-gold.webp"
+    },
+    {
+      "id": "23761f2f-88ef-478a-9acf-38990e3e6819",
+      "name": "American Express Green Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/green-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/green.webp",
+      "filename": "amex-green.webp"
+    },
+    {
+      "id": "5d24ba64-8543-49c9-99ba-48ce4c0c0fce",
+      "name": "Blue Cash Everyday Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/blue-cash-everyday-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/blue-cash-everyday.webp",
+      "filename": "amex-blue-cash-everyday.webp"
+    },
+    {
+      "id": "71b22c38-ffb1-4224-93e5-cb0ee9e05381",
+      "name": "Blue Cash Preferred Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/blue-cash-preferred-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/blue-cash-preferred.webp",
+      "filename": "amex-blue-cash-preferred.webp"
+    },
+    {
+      "id": "fd39035a-a079-4b76-9431-98ab1ea96b29",
+      "name": "Delta SkyMiles Blue American Express Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/delta-blue-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/delta-skymiles-blue.webp",
+      "filename": "amex-delta-skymiles-blue.webp"
+    },
+    {
+      "id": "9e4592a9-433c-4078-bfc1-1487e94f4020",
+      "name": "Delta SkyMiles Gold American Express Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/delta-gold-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/delta-skymiles-gold.webp",
+      "filename": "amex-delta-skymiles-gold.webp"
+    },
+    {
+      "id": "5a0b67ed-d9bb-42cb-8570-b95369b4ef9e",
+      "name": "Delta SkyMiles Platinum American Express Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/delta-platinum-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/delta-skymiles-platinum.webp",
+      "filename": "amex-delta-skymiles-platinum.webp"
+    },
+    {
+      "id": "fb132608-3bac-4c31-9800-c69c7aaa0df2",
+      "name": "The Platinum Card",
+      "issuer": "American Express",
+      "oldUrl": "https://www.americanexpress.com/content/dam/amex/us/cardimage/platinum-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/amex/platinum.webp",
+      "filename": "amex-platinum.webp"
+    },
+    {
+      "id": "b95290d0-0e59-47f6-a2f3-234a24eb890d",
+      "name": "Bank of America Customized Cash Rewards",
+      "issuer": "Bank of America",
+      "oldUrl": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/assets/bor-customized-cash-rewards.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/customized-cash.webp",
+      "filename": "bofa-customized-cash.webp"
+    },
+    {
+      "id": "696c9fe7-2d5c-4008-b135-d327c1b48e82",
+      "name": "Bank of America Premium Rewards",
+      "issuer": "Bank of America",
+      "oldUrl": "https://www.bankofamerica.com/credit-cards/assets/premium-rewards.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/premium.webp",
+      "filename": "bofa-premium.webp"
+    },
+    {
+      "id": "9ac53028-485b-4a48-8faa-972149fe7b2b",
+      "name": "Bank of America Travel Rewards",
+      "issuer": "Bank of America",
+      "oldUrl": "https://www.bankofamerica.com/credit-cards/products/travel-rewards-credit-card/assets/boa-travel-rewards.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/travel.webp",
+      "filename": "bofa-travel.webp"
+    },
+    {
+      "id": "1a69147c-cd60-42a1-9844-498aeaf494ad",
+      "name": "Bank of America Unlimited Cash Rewards",
+      "issuer": "Bank of America",
+      "oldUrl": "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-back-credit-card/assets/boa-unlimited-cash-rewards.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/unlimited-cash.webp",
+      "filename": "bofa-unlimited-cash.webp"
+    },
+    {
+      "id": "e46c2d21-7cdb-4784-b0b3-5161514accae",
+      "name": "BankAmericard",
+      "issuer": "Bank of America",
+      "oldUrl": "https://www.bankofamerica.com/credit-cards/assets/bankamericard.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/bofa/bankamericard.webp",
+      "filename": "bofa-bankamericard.webp"
+    },
+    {
+      "id": "b50928f1-adf7-41e8-ae4b-2b21ea92ed4f",
+      "name": "Capital One Platinum Mastercard",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/platinum.webp",
+      "filename": "capital-platinum.webp"
+    },
+    {
+      "id": "0d6236d2-cb65-4faf-91d4-a49dfe985371",
+      "name": "Capital One Quicksilver Rewards",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/quicksilver.webp",
+      "filename": "capital-quicksilver.webp"
+    },
+    {
+      "id": "60afc617-e5e9-4b77-a410-4e95bd909c9a",
+      "name": "Capital One Quicksilver Rewards for Good Credit",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/quicksilver-for-good.webp",
+      "filename": "capital-quicksilver-for-good.webp"
+    },
+    {
+      "id": "446d4f9c-c8a0-4c9c-8c5a-6a97ea737f69",
+      "name": "Capital One Quicksilver Secured Rewards",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/quicksilver-secured.webp",
+      "filename": "capital-quicksilver-secured.webp"
+    },
+    {
+      "id": "049302ee-4306-4c10-999f-65776f3a7246",
+      "name": "Capital One QuicksilverOne Rewards",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/quicksilverone.webp",
+      "filename": "capital-quicksilverone.webp"
+    },
+    {
+      "id": "61759cc5-bf18-4e55-a52a-6198f151f060",
+      "name": "Capital One Savor Rewards",
+      "issuer": "Capital One",
+      "oldUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/one-savor-rewards.webp",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/savor-rewards.webp",
+      "filename": "capital-savor-rewards.webp"
+    },
+    {
+      "id": "238749ca-3419-4dca-9713-82bd1be2b210",
+      "name": "Capital One Spark 1% Classic",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-1-classic.webp",
+      "filename": "capital-spark-1-classic.webp"
+    },
+    {
+      "id": "96add599-1680-4e69-b396-237c1f2f56df",
+      "name": "Capital One Spark 1.5% Cash Select",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-15-cash-select.webp",
+      "filename": "capital-spark-15-cash-select.webp"
+    },
+    {
+      "id": "5cc47f49-13b3-40ac-8a77-f2e4ba0184a2",
+      "name": "Capital One Spark 1.5X Miles Select",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-15x-miles-select.webp",
+      "filename": "capital-spark-15x-miles-select.webp"
+    },
+    {
+      "id": "b35ee439-438a-4a97-ba0a-09a5558ec512",
+      "name": "Capital One Spark 2% Cash",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-2-cash.webp",
+      "filename": "capital-spark-2-cash.webp"
+    },
+    {
+      "id": "d68545ea-d05b-48b5-879c-13d62bfd68fc",
+      "name": "Capital One Spark 2% Cash Plus",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-2-cash-plus.webp",
+      "filename": "capital-spark-2-cash-plus.webp"
+    },
+    {
+      "id": "384e73cd-5fa0-46b2-bcc9-a43196e2cee1",
+      "name": "Capital One Spark 2X Miles",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/spark-2x-miles.webp",
+      "filename": "capital-spark-2x-miles.webp"
+    },
+    {
+      "id": "189f7c9d-ff49-46d8-a1ad-c6f4ca06069b",
+      "name": "Capital One Venture Rewards",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/venture.webp",
+      "filename": "capital-venture.webp"
+    },
+    {
+      "id": "47e928cc-0dc1-4d06-93ff-c2541255ce44",
+      "name": "Capital One Venture X Rewards",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/venture-x.webp",
+      "filename": "capital-venture-x.webp"
+    },
+    {
+      "id": "dc2eabdd-3895-4175-97f8-2f6238813aa4",
+      "name": "Capital One VentureOne Rewards",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/ventureone.webp",
+      "filename": "capital-ventureone.webp"
+    },
+    {
+      "id": "4811dbcb-19db-4059-b9a6-3df97f38a299",
+      "name": "Capital One VentureOne Rewards for Good Credit",
+      "issuer": "Capital One",
+      "oldUrl": null,
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/capital/ventureone-for-good.webp",
+      "filename": "capital-ventureone-for-good.webp"
+    },
+    {
+      "id": "2285751f-8746-4c67-9b71-ce8a3f13b1d2",
+      "name": "Chase Freedom Flex",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-blue/images/freedom-flex-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/freedom-flex.webp",
+      "filename": "chase-freedom-flex.webp"
+    },
+    {
+      "id": "0ad42078-afee-4164-a119-c6ae8b9b8ae6",
+      "name": "Chase Freedom Rise",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-blue/images/freedom-rise-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/freedom-rise.webp",
+      "filename": "chase-freedom-rise.webp"
+    },
+    {
+      "id": "cd91743c-8142-42c3-9025-4d30c7abbbce",
+      "name": "Chase Freedom Unlimited",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-blue/images/freedom-unlimited-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/freedom-unlimited.webp",
+      "filename": "chase-freedom-unlimited.webp"
+    },
+    {
+      "id": "5d72cd77-41a9-4815-afdf-d4adeca43d56",
+      "name": "Chase Sapphire Preferred",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-blue/images/sapphire-preferred-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/sapphire-preferred.webp",
+      "filename": "chase-sapphire-preferred.webp"
+    },
+    {
+      "id": "56df292f-3457-4790-8392-2445efe2acb0",
+      "name": "Chase Sapphire Reserve",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-blue/images/sapphire-reserve-metal-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/sapphire-reserve.webp",
+      "filename": "chase-sapphire-reserve.webp"
+    },
+    {
+      "id": "fd5042f7-6dae-4a8f-972f-7ac31917e774",
+      "name": "Disney Premier Visa Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-disney/premier-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/disney-premier.webp",
+      "filename": "chase-disney-premier.webp"
+    },
+    {
+      "id": "869dde8c-8f2b-43ff-b0e2-18fd917aaa33",
+      "name": "Disney Visa Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-disney/visa-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/disney.webp",
+      "filename": "chase-disney.webp"
+    },
+    {
+      "id": "76a04f89-7699-4ee4-bd69-7156270e6891",
+      "name": "DoorDash Rewards Mastercard",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-doordash/doordash-rewards-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/doordash.webp",
+      "filename": "chase-doordash.webp"
+    },
+    {
+      "id": "bb213f62-bc94-44a9-a81d-66eacf61fd6c",
+      "name": "Instacart Mastercard",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-instacart/instacart-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/instacart.webp",
+      "filename": "chase-instacart.webp"
+    },
+    {
+      "id": "a3db4269-7a08-4fa2-828a-a72a2152ab49",
+      "name": "Marriott Bonvoy Bold Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-marriott/bold-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/marriott-bonvoy-bold.webp",
+      "filename": "chase-marriott-bonvoy-bold.webp"
+    },
+    {
+      "id": "ed6305a2-3db4-40b6-add3-ea694a5c3931",
+      "name": "Marriott Bonvoy Boundless Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-marriott/boundless-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/marriott-bonvoy-boundless.webp",
+      "filename": "chase-marriott-bonvoy-boundless.webp"
+    },
+    {
+      "id": "486adbf9-2ca3-44c5-b3fb-b4a76e16fd8d",
+      "name": "Marriott Bonvoy Bountiful Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-marriott/bountiful-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/marriott-bonvoy-bountiful.webp",
+      "filename": "chase-marriott-bonvoy-bountiful.webp"
+    },
+    {
+      "id": "78e2884e-03a6-4153-a5f5-61d77014d267",
+      "name": "Prime Visa",
+      "issuer": "Chase",
+      "oldUrl": "https://www.amazon.com/amazonvisa/image.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/prime.webp",
+      "filename": "chase-prime.webp"
+    },
+    {
+      "id": "78357cc2-e4a6-4ec6-9db9-2e51f72f23df",
+      "name": "Slate Edge",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-blue/images/slate-edge-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/slate-edge.webp",
+      "filename": "chase-slate-edge.webp"
+    },
+    {
+      "id": "63b34781-ee3e-4f49-b67e-f0159a790ef9",
+      "name": "Southwest Rapid Rewards Plus Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-southwest/plus-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/southwest-rapid-plus.webp",
+      "filename": "chase-southwest-rapid-plus.webp"
+    },
+    {
+      "id": "1a9e6947-3905-450f-9146-9975c731c75f",
+      "name": "Southwest Rapid Rewards Premier Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-southwest/premier-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/southwest-rapid-premier.webp",
+      "filename": "chase-southwest-rapid-premier.webp"
+    },
+    {
+      "id": "ba5b17c1-5d7e-4feb-aaa1-28161e92b0f3",
+      "name": "Southwest Rapid Rewards Priority Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-southwest/priority-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/southwest-rapid-priority.webp",
+      "filename": "chase-southwest-rapid-priority.webp"
+    },
+    {
+      "id": "82b7ed9a-610d-4e57-93f7-a1996fda3f8c",
+      "name": "The New United Club Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-united/club-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/united-club.webp",
+      "filename": "chase-united-club.webp"
+    },
+    {
+      "id": "8fdd646b-861f-48d6-82b1-2fde9376d634",
+      "name": "The New United Explorer Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-united/explorer-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/united-explorer.webp",
+      "filename": "chase-united-explorer.webp"
+    },
+    {
+      "id": "0ee18072-efb5-4f77-9b4a-651bcc28696d",
+      "name": "The New United Gateway Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-united/gateway-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/united-gateway.webp",
+      "filename": "chase-united-gateway.webp"
+    },
+    {
+      "id": "afe4190c-1774-4ddf-b57b-92760165a0b3",
+      "name": "The New United Quest Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-united/quest-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/united-quest.webp",
+      "filename": "chase-united-quest.webp"
+    },
+    {
+      "id": "0b1ac5cd-50cc-4cc1-9499-3834156c3e2c",
+      "name": "World of Hyatt Credit Card",
+      "issuer": "Chase",
+      "oldUrl": "https://creditcards.chase.com/content/dam/public/cc-hyatt/world-of-hyatt-card.png",
+      "newUrl": "https://fummzkny8emtgsza.public.blob.vercel-storage.com/cards/chase/world-of-hyatt.webp",
+      "filename": "chase-world-of-hyatt.webp"
+    }
+  ],
+  "skippedCards": [],
+  "failedUpdates": []
+}
