@@ -8,6 +8,7 @@ Technical implementation featuring Express.js API with PostgreSQL, Next.js 15 fr
 [![Backend API](https://img.shields.io/badge/API-Backend%20Live-green?style=for-the-badge&logo=nodejs)](https://card-rewards-optimizer-backend.vercel.app)
 
 ![FrontPage](./frontend/public/card-rewards-optimizer.png)
+![Results](./frontend/public/card-rewards-results.png)
 ![Discover](./frontend/public/discover-cards.png)
 ![MyCards](./frontend/public/my-cards.png)
 ![Visualizer](./frontend/public/visualizer.png)
