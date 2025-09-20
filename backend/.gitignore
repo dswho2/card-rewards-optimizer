@@ -2,3 +2,5 @@
 
 .env*
 .vercel
+
+data/images/*
