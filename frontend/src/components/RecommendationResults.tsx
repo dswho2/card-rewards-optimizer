@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import CreditCardItem from './CreditCardItem';
 import {
   CreditCard,
   TrendingUp,
@@ -249,7 +250,7 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
             <p className="text-sm">
               <strong>&quot;{results.metadata.description}&quot;</strong>
               {hasValidAmount() ? (
-                <span className="text-green-600 font-medium"> • ${Number(results.metadata.amount).toFixed(2)}</span>
+                <span className="font-medium"> • ${Number(results.metadata.amount).toFixed(2)}</span>
               ) : null}
             </p>
             {results.reasoning && (
@@ -271,93 +272,38 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-bold text-xl">{topRecommendation.cardName}</h3>
-                  <p className="text-muted-foreground font-medium">{topRecommendation.issuer}</p>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Reward Rate:</span>
-                    <span className="font-bold text-lg text-green-600">
+            <CreditCardItem
+              card={{
+                id: topRecommendation.cardId,
+                name: topRecommendation.cardName,
+                issuer: topRecommendation.issuer,
+                annual_fee: topRecommendation.annualFee,
+                rewards: [],
+                image_url: topRecommendation.imageUrl || `/api/cards/${topRecommendation.cardId}/image`,
+                notes: ''
+              }}
+              reasoning={`${topRecommendation.effectiveRate}% back on ${topRecommendation.category.toLowerCase()} purchases${topRecommendation.conditions.length > 0 ? '\n' + topRecommendation.conditions.map(c => `• ${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}`).join('\n') : ''}${topRecommendation.capStatus && topRecommendation.capStatus.total ? `\n• Spending cap: $${topRecommendation.capStatus.remaining || 0} remaining of $${topRecommendation.capStatus.total}` : ''}`}
+              issuer={topRecommendation.issuer}
+              className="bg-white dark:bg-gray-800"
+              rightContent={
+                <div className="text-right space-y-2">
+                  <div>
+                    <div className="font-bold text-lg text-green-600">
                       {topRecommendation.effectiveRate}%
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Reward Value:</span>
-                    {hasValidAmount() ? (
-                      <span className="font-bold text-lg text-green-600">
-                        ${topRecommendation.rewardValue}
-                      </span>
-                    ) : (
-                      <span className="font-bold text-lg text-muted-foreground">
-                        N/A
-                      </span>
-                    )}
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Annual Fee:</span>
-                    <span className={`font-semibold ${topRecommendation.annualFee === 0 ? 'text-green-600' : 'text-white'}`}>
-                      ${topRecommendation.annualFee}
-                    </span>
-                  </div>
-
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Why This Card?</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {topRecommendation.reasoning}
-                  </p>
-                </div>
-
-                {topRecommendation.conditions.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-2 text-amber-600 flex items-center gap-1">
-                      <AlertCircle className="h-4 w-4" />
-                      Important Conditions
-                    </h4>
-                    <ul className="space-y-1">
-                      {topRecommendation.conditions.map((condition, index) => (
-                        <li key={index} className="text-sm text-amber-700 flex items-start gap-2">
-                          <span className="text-amber-500 mt-0.5">•</span>
-                          {condition}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {topRecommendation.capStatus && topRecommendation.capStatus.total && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Spending Cap Status</h4>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span>Used</span>
-                        <span>${(topRecommendation.capStatus.total - (topRecommendation.capStatus.remaining || 0)).toFixed(0)} / ${topRecommendation.capStatus.total}</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all"
-                          style={{ 
-                            width: `${((topRecommendation.capStatus.total - (topRecommendation.capStatus.remaining || 0)) / topRecommendation.capStatus.total) * 100}%` 
-                          }}
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        ${topRecommendation.capStatus.remaining} remaining this period
-                      </p>
                     </div>
+                    <div className="text-xs text-gray-500">Reward Rate</div>
                   </div>
-                )}
-              </div>
-            </div>
+                  {hasValidAmount() && (
+                    <div>
+                      <div className="font-bold text-lg text-green-600">
+                        ${topRecommendation.rewardValue}
+                      </div>
+                      <div className="text-xs text-gray-500">Reward Value</div>
+                    </div>
+                  )}
+                </div>
+              }
+            />
           </CardContent>
         </Card>
       )}
@@ -374,33 +320,40 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
           <CardContent>
             <div className="space-y-3">
               {results.alternatives.slice(0, 5).map((card, index) => (
-                <div key={card.cardId} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg font-bold text-muted-foreground">#{index + 2}</span>
-                      <div>
-                        <h4 className="font-semibold">{card.cardName}</h4>
-                        <p className="text-sm text-muted-foreground">{card.issuer}</p>
+                <div key={card.cardId} className="flex items-center gap-4">
+                  <div className="flex-shrink-0">
+                    <span className="text-2xl font-bold text-muted-foreground">#{index + 2}</span>
+                  </div>
+                  <CreditCardItem
+                    card={{
+                      id: card.cardId,
+                      name: card.cardName,
+                      issuer: card.issuer,
+                      annual_fee: card.annualFee,
+                      rewards: [],
+                      image_url: card.imageUrl || `/api/cards/${card.cardId}/image`,
+                      notes: ''
+                    }}
+                    reasoning={`${card.effectiveRate}% back on ${card.category.toLowerCase()} purchases${card.conditions.length > 0 ? '\n' + card.conditions.map(c => `• ${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}`).join('\n') : ''}`}
+                    issuer={card.issuer}
+                    className="bg-gray-50 dark:bg-gray-700 flex-1"
+                    rightContent={
+                      <div className="text-right space-y-1">
+                        <div>
+                          <div className="font-bold text-lg">{card.effectiveRate}%</div>
+                          <div className="text-xs text-gray-500">Reward Rate</div>
+                        </div>
+                        {hasValidAmount() && (
+                          <div>
+                            <div className="text-sm font-medium">
+                              ${card.rewardValue}
+                            </div>
+                            <div className="text-xs text-gray-500">Reward Value</div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    {card.conditions.length > 0 && (
-                      <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        {card.conditions[0]}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-lg">{card.effectiveRate}%</p>
-                    {hasValidAmount() ? (
-                      <p className="text-sm text-green-600 font-medium">${card.rewardValue}</p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground font-medium">N/A</p>
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                      ${card.annualFee} annual fee
-                    </p>
-                  </div>
+                    }
+                  />
                 </div>
               ))}
             </div>

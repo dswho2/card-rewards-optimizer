@@ -125,7 +125,12 @@ export default function CreditCardItem({
             {reasoning ? (
               <div className="text-sm text-gray-700 dark:text-gray-300 mt-2">
                 {reasoning.split('\n').map((line: string, index: number) => (
-                  <div key={index} className="mb-1">{line}</div>
+                  <div
+                    key={index}
+                    className={`mb-1 ${line.startsWith('•') ? 'text-orange-600 dark:text-orange-400' : ''}`}
+                  >
+                    {line}
+                  </div>
                 ))}
               </div>
             ) : (
