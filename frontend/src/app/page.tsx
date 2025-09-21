@@ -122,7 +122,7 @@ export default function Home() {
   // Show recommendations if we have them
   if (recommendations) {
     return (
-      <main className="p-6 max-w-6xl mx-auto">
+      <main className="p-4 sm:p-6 max-w-6xl mx-auto">
         <RecommendationResults
           results={recommendations}
           onNewSearch={handleNewSearch}
@@ -136,24 +136,24 @@ export default function Home() {
   }
 
   return (
-    <main className="p-6 max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4">Card Rewards Optimizer</h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300">
+    <main className="p-4 sm:p-6 max-w-4xl mx-auto">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">Card Rewards Optimizer</h1>
+        <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300">
           Find the best credit card for every purchase
         </p>
       </div>
 
       {!isLoggedIn ? (
-        <div className="text-center p-8 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">Welcome!</h2>
-          <p className="text-gray-600 dark:text-gray-300">
+        <div className="text-center p-6 sm:p-8 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-4">Welcome!</h2>
+          <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
             Log in to get personalized card recommendations powered by AI.
           </p>
         </div>
       ) : (
         <div className="max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div className="space-y-4">
               <div>
                 <label htmlFor="description" className="block text-sm font-medium mb-2">
@@ -163,7 +163,7 @@ export default function Home() {
                   id="description"
                   type="text"
                   placeholder="e.g. booking a hotel in NYC, buying groceries, gas station"
-                  className="w-full p-4 text-lg border rounded-lg dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-3 sm:p-4 text-base sm:text-lg border rounded-lg dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={loading}
@@ -178,7 +178,7 @@ export default function Home() {
                   id="amount"
                   type="number"
                   placeholder="$0.00"
-                  className="w-full p-3 border rounded-lg dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-3 border rounded-lg dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 touch-manipulation"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   min="0"
@@ -190,7 +190,7 @@ export default function Home() {
 
             <button
               type="submit"
-              className="w-full py-4 px-6 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 sm:py-4 px-4 sm:px-6 bg-blue-600 text-white text-base sm:text-lg font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors touch-manipulation"
               disabled={!input.trim() || loading}
             >
               {loading ? (
@@ -200,7 +200,7 @@ export default function Home() {
                 </div>
               ) : (
                 <>
-                  <div className="text-sm opacity-90 mb-1">Best from My Cards</div>
+                  <div className="text-xs sm:text-sm opacity-90 mb-1">Best from My Cards</div>
                   <div>Get Purchase Recommendation</div>
                 </>
               )}
@@ -220,14 +220,14 @@ export default function Home() {
           )}
 
           {/* Quick suggestions */}
-          <div className="mt-8">
+          <div className="mt-6 sm:mt-8">
             <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">
               Quick examples:
             </h3>
             <div className="flex flex-wrap gap-2">
               {[
                 'booking a hotel in NYC',
-                'dinner at Italian restaurant', 
+                'dinner at Italian restaurant',
                 'groceries at Whole Foods',
                 'gas at Shell station',
                 'flight to Los Angeles',
@@ -237,7 +237,7 @@ export default function Home() {
                   key={index}
                   type="button"
                   onClick={() => setInput(suggestion)}
-                  className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  className="px-3 py-1 text-xs sm:text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors touch-manipulation"
                   disabled={loading}
                 >
                   {suggestion}
@@ -247,25 +247,25 @@ export default function Home() {
           </div>
 
           {/* Feature highlights */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="p-4">
-              <div className="text-2xl mb-2">🤖</div>
-              <h3 className="font-semibold mb-1">AI-Powered</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-center">
+            <div className="p-3 sm:p-4">
+              <div className="text-xl sm:text-2xl mb-2">🤖</div>
+              <h3 className="font-semibold mb-1 text-sm sm:text-base">AI-Powered</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 Advanced semantic analysis with Pinecone and OpenAI
               </p>
             </div>
-            <div className="p-4">
-              <div className="text-2xl mb-2">⚡</div>
-              <h3 className="font-semibold mb-1">Smart Matching</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="p-3 sm:p-4">
+              <div className="text-xl sm:text-2xl mb-2">⚡</div>
+              <h3 className="font-semibold mb-1 text-sm sm:text-base">Smart Matching</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 Analyzes spending caps, conditions, and optimal timing
               </p>
             </div>
-            <div className="p-4">
-              <div className="text-2xl mb-2">📊</div>
-              <h3 className="font-semibold mb-1">Detailed Insights</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="p-3 sm:p-4 sm:col-span-2 lg:col-span-1">
+              <div className="text-xl sm:text-2xl mb-2">📊</div>
+              <h3 className="font-semibold mb-1 text-sm sm:text-base">Detailed Insights</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 See confidence scores, alternatives, and reasoning
               </p>
             </div>

@@ -180,8 +180,8 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
               <p className="text-sm text-muted-foreground">Category</p>
               <Badge variant="secondary" className="mt-1 text-sm">
                 {results.category}
@@ -191,7 +191,7 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
               <p className="text-sm text-muted-foreground">Confidence</p>
               <div className="flex items-center gap-2 mt-1">
                 <div className="flex-1 bg-muted rounded-full h-2">
-                  <div 
+                  <div
                     className={`h-2 rounded-full ${getConfidenceColor(results.confidence)}`}
                     style={{ width: `${results.confidence * 100}%` }}
                   />
@@ -201,22 +201,22 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
                 </span>
               </div>
             </div>
-            <div>
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
               <p className="text-sm text-muted-foreground">Detection Method</p>
               <div className="relative mt-1" ref={dropdownRef}>
                 <div
                   onClick={() => setShowDetectionDropdown(!showDetectionDropdown)}
                   className="inline-block cursor-pointer"
                 >
-                  <Badge variant={getSourceConfig(results.source).variant} className="flex items-center gap-1 hover:opacity-80">
+                  <Badge variant={getSourceConfig(results.source).variant} className="flex items-center gap-1 hover:opacity-80 text-xs sm:text-sm">
                     {getSourceConfig(results.source).icon}
-                    {getSourceConfig(results.source).label}
+                    <span>{getSourceConfig(results.source).label}</span>
                     <ChevronDown className="h-3 w-3" />
                   </Badge>
                 </div>
 
                 {showDetectionDropdown && (
-                  <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50 min-w-[150px]">
+                  <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50 min-w-[150px] right-0 sm:right-auto">
                     {detectionMethods.map((method) => {
                       const isCurrentMethod = currentMethod ? method.value === currentMethod : false;
 
@@ -225,7 +225,7 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
                           key={method.value}
                           onClick={() => !isCurrentMethod && handleReanalyze(method.value)}
                           disabled={isCurrentMethod}
-                          className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors first:rounded-t-md last:rounded-b-md ${
+                          className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors first:rounded-t-md last:rounded-b-md touch-manipulation ${
                             isCurrentMethod
                               ? 'cursor-not-allowed opacity-50 text-muted-foreground bg-muted'
                               : 'hover:bg-muted cursor-pointer text-foreground'
@@ -242,7 +242,7 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Cards Analyzed</p>
-              <p className="font-semibold text-lg mt-1">{results.metadata.cardsAnalyzed}</p>
+              <p className="font-semibold text-base sm:text-lg mt-1">{results.metadata.cardsAnalyzed}</p>
             </div>
           </div>
           
@@ -320,9 +320,9 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
           <CardContent>
             <div className="space-y-3">
               {results.alternatives.slice(0, 5).map((card, index) => (
-                <div key={card.cardId} className="flex items-center gap-4">
+                <div key={card.cardId} className="flex items-center gap-2 sm:gap-4">
                   <div className="flex-shrink-0">
-                    <span className="text-2xl font-bold text-muted-foreground">#{index + 2}</span>
+                    <span className="text-lg sm:text-2xl font-bold text-muted-foreground">#{index + 2}</span>
                   </div>
                   <CreditCardItem
                     card={{
@@ -340,12 +340,12 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
                     rightContent={
                       <div className="text-right space-y-1">
                         <div>
-                          <div className="font-bold text-lg">{card.effectiveRate}%</div>
+                          <div className="font-bold text-base sm:text-lg">{card.effectiveRate}%</div>
                           <div className="text-xs text-gray-500">Reward Rate</div>
                         </div>
                         {hasValidAmount() && (
                           <div>
-                            <div className="text-sm font-medium">
+                            <div className="text-xs sm:text-sm font-medium">
                               ${card.rewardValue}
                             </div>
                             <div className="text-xs text-gray-500">Reward Value</div>
@@ -368,48 +368,48 @@ export function RecommendationResults({ results, onNewSearch, onReanalyze, mode,
             <CardTitle>Analysis Details</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-center">
               <div className="p-3 bg-muted rounded-lg">
-                <p className="text-2xl font-bold text-primary">
+                <p className="text-xl sm:text-2xl font-bold text-primary">
                   {results.recommendations.length}
                 </p>
-                <p className="text-sm text-muted-foreground">Total Recommendations</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total Recommendations</p>
               </div>
-              
+
               {topRecommendation && (
                 <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-xl sm:text-2xl font-bold text-green-600">
                     {topRecommendation.effectiveRate.toFixed(1)}%
                   </p>
-                  <p className="text-sm text-muted-foreground">Best Rate Found</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Best Rate Found</p>
                 </div>
               )}
-              
+
               <div className="p-3 bg-muted rounded-lg">
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-xl sm:text-2xl font-bold text-blue-600">
                   {getConfidenceText(results.confidence)}
                 </p>
-                <p className="text-sm text-muted-foreground">Confidence Level</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Confidence Level</p>
               </div>
-              
+
               {results.details.topScore && (
                 <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-2xl font-bold text-purple-600">
+                  <p className="text-xl sm:text-2xl font-bold text-purple-600">
                     {(results.details.topScore * 100).toFixed(0)}%
                   </p>
-                  <p className="text-sm text-muted-foreground">Match Similarity</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Match Similarity</p>
                 </div>
               )}
             </div>
 
             {results.details.allScores && (
               <div className="mt-6">
-                <h4 className="font-semibold mb-3">Category Similarity Scores</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <h4 className="font-semibold mb-3 text-sm sm:text-base">Category Similarity Scores</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {Object.entries(results.details.allScores).map(([category, score]) => (
-                    <div key={category} className="flex justify-between items-center p-2 bg-muted rounded text-sm">
-                      <span>{category}</span>
-                      <span className="font-medium">{(parseFloat(score) * 100).toFixed(0)}%</span>
+                    <div key={category} className="flex justify-between items-center p-2 bg-muted rounded text-xs sm:text-sm">
+                      <span className="truncate mr-2">{category}</span>
+                      <span className="font-medium flex-shrink-0">{(parseFloat(score) * 100).toFixed(0)}%</span>
                     </div>
                   ))}
                 </div>
