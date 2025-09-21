@@ -72,7 +72,7 @@ export default function Navbar() {
         />
       )}
 
-      <nav className="relative flex justify-between items-center p-4 border-b dark:border-gray-700 bg-background/95 backdrop-blur-sm z-50">
+      <nav className="sticky top-0 flex justify-between items-center p-4 border-b dark:border-gray-700 bg-background/95 backdrop-blur-sm z-50">
         {/* Left side - Logo and Navigation */}
         <div className="flex gap-4 items-center">
           <Link href="/" className="text-xl font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 transform hover:scale-105" onClick={handleHomeClick}>CardRewards</Link>
@@ -130,7 +130,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Navigation Menu */}
-        <div className={`absolute top-full left-0 right-0 md:hidden overflow-hidden transition-all duration-300 ease-in-out z-50 ${
+        <div className={`absolute top-full left-0 right-0 md:hidden overflow-hidden transition-all duration-300 ease-in-out z-40 ${
           mobileMenuOpen
             ? 'max-h-96 opacity-100 translate-y-0'
             : 'max-h-0 opacity-0 -translate-y-2'
